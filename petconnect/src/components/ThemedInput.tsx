@@ -5,14 +5,16 @@ import { Entypo } from "@expo/vector-icons";
 
 type TypeThemedInput = {
   placeholder: string;
+  children?: React.ReactNode;
 };
 
-export function ThemedInput({ placeholder }: TypeThemedInput) {
+export function ThemedInput({ placeholder, children }: TypeThemedInput) {
   const [text, setText] = useState("");
 
   return (
     <View style={styles.inputContainer}>
-      <Entypo name="mail" size={25} style={styles.icon} />
+      {/* <Entypo name="mail" size={25} style={styles.icon} /> */}
+      {children}
       <TextInput
         style={styles.input}
         placeholder={placeholder}
@@ -35,11 +37,7 @@ const styles = StyleSheet.create({
     width: "75%",
     height: 45,
   },
-  icon: {
-    marginRight: 10,
-    marginLeft: 10,
-  },
-  input: {
+   input: {
     flex: 1,
     color: "#fff",
     fontSize: 17,

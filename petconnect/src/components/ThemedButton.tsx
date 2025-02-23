@@ -5,15 +5,17 @@ import { ThemedView } from "./ThemedView";
 export type TypeThemedButton = {
   title: string;
   type: "blue" | "light";
+  onPress: () => void;
 };
 
-export function ThemedButton({ title, type = "blue" }: TypeThemedButton) {
+export function ThemedButton({ title, type = "blue", onPress }: TypeThemedButton) {
   return (
     <TouchableOpacity
       style={[
         type === "blue" ? styles.default : undefined,
         type === "light" ? styles.lightButton : undefined,
       ]}
+      onPress={onPress}
     >
       <ThemedText
         type="defaultSemiBold"
