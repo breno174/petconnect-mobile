@@ -4,7 +4,7 @@ import { ThemedText } from "./ThemedText";
 export type TypeThemedButton = {
   title: string;
   type: "blue" | "light";
-  onPress: () => void;
+  onPress?: () => void;
 };
 
 export function ThemedButton({

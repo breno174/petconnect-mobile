@@ -1,16 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, TextInput, StyleSheet } from "react-native";
 // import Icon from 'react-native-vector-icons/FontAwesome'; // Certifique-se de instalar essa lib
 import { Entypo } from "@expo/vector-icons";
 
 type TypeThemedInput = {
   placeholder: string;
+  value: string;
+  onChangeText: (text: string) => void;
   children?: React.ReactNode;
 };
 
-export function ThemedInput({ placeholder, children }: TypeThemedInput) {
-  const [text, setText] = useState("");
-
+export function ThemedInput({
+  placeholder,
+  value,
+  onChangeText,
+  children,
+}: TypeThemedInput) {
   return (
     <View style={styles.inputContainer}>
       {/* <Entypo name="mail" size={25} style={styles.icon} /> */}
@@ -19,8 +24,8 @@ export function ThemedInput({ placeholder, children }: TypeThemedInput) {
         style={styles.input}
         placeholder={placeholder}
         placeholderTextColor="#777"
-        value={text}
-        onChangeText={setText}
+        value={value}
+        onChangeText={onChangeText}
       />
     </View>
   );
