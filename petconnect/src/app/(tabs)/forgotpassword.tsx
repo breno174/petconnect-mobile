@@ -3,8 +3,11 @@ import { ThemedInput } from "@/src/components/ThemedInput";
 import { ThemedText } from "@/src/components/ThemedText";
 import { ThemedView } from "@/src/components/ThemedView";
 import { Image, StyleSheet, View } from "react-native";
+import { Entypo } from "@expo/vector-icons";
+import { useNavigation } from "expo-router";
 
 export default function ForgotPassword() {
+  const navigation = useNavigation();
   return (
     <ThemedView style={styles.container}>
       <View style={styles.topSide}>
@@ -27,9 +30,15 @@ export default function ForgotPassword() {
         </ThemedText>
       </View>
       <View style={styles.container}>
-        <ThemedInput placeholder="Email" />
+        <ThemedInput placeholder="Email">
+          <Entypo name="mail" size={25} style={styles.icon} />
+        </ThemedInput>
         <ThemedButton type="blue" title="Enviar" />
-        <ThemedButton type="light" title="Voltar" />
+        <ThemedButton
+          type="light"
+          title="Voltar"
+          onPress={() => navigation.navigate("login")}
+        />
       </View>
     </ThemedView>
   );
@@ -63,5 +72,9 @@ const styles = StyleSheet.create({
     height: 178,
     width: 178,
     margin: 10,
+  },
+  icon: {
+    marginRight: 10,
+    marginLeft: 10,
   },
 });
