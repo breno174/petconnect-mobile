@@ -1,14 +1,17 @@
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { ThemedText } from "./ThemedText";
-import { ThemedView } from "./ThemedView";
 
 export type TypeThemedButton = {
   title: string;
   type: "blue" | "light";
-  onPress: () => void;
+  onPress?: () => void;
 };
 
-export function ThemedButton({ title, type = "blue", onPress }: TypeThemedButton) {
+export function ThemedButton({
+  title,
+  type = "blue",
+  onPress,
+}: TypeThemedButton) {
   return (
     <TouchableOpacity
       style={[
