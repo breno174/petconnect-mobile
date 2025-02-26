@@ -6,19 +6,19 @@ import { Alert, Image, StyleSheet, View } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from ".";
+// import { RootStackParamList } from "../../(tabs)";
 import { useState } from "react";
 
-type NavigationProps = StackNavigationProp<RootStackParamList>;
+// type NavigationProps = StackNavigationProp<RootStackParamList>;
 
 export default function ForgotPassword() {
-  const navigation = useNavigation<NavigationProps>();
+  // const navigation = useNavigation<NavigationProps>();
   const [email, setEmail] = useState("");
 
   const handleEnviar = () => {
     if (email.trim() !== "") {
       // @TODO enviar um email para troca de senha.
-      navigation.navigate("forgotstep");
+      // navigation.navigate("forgotstep");
     } else {
       Alert.alert("Erro", "O campo não pode estar vazio!");
     }
@@ -57,7 +57,7 @@ export default function ForgotPassword() {
         <ThemedButton
           type="light"
           title="Voltar"
-          onPress={() => navigation.navigate("login")}
+          // onPress={() => navigation.navigate("login")}
         />
       </View>
     </ThemedView>

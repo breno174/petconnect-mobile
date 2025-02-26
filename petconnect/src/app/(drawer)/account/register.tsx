@@ -6,13 +6,13 @@ import { Image, View, StyleSheet } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from ".";
+// import { RootStackParamList } from "../../(tabs)";
 import { useState } from "react";
 
-type NavigationProps = StackNavigationProp<RootStackParamList>;
+// type NavigationProps = StackNavigationProp<RootStackParamList>;
 
 export default function Register() {
-  const navigation = useNavigation<NavigationProps>();
+  // const navigation = useNavigation<NavigationProps>();
   const [email, setEmail] = useState("");
   const [nome, setNome] = useState("");
   const [cpf, setCpf] = useState("");
@@ -80,7 +80,7 @@ export default function Register() {
           <ThemedButton
             type="blue"
             title="Cadastrar"
-            onPress={() => navigation.navigate("login")}
+            // onPress={() => navigation.navigate("login")}
           />
         </View>
       </View>
