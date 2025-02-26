@@ -4,7 +4,6 @@ import { DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navi
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { DrawerActions } from '@react-navigation/native';
 
 export default function CustomDrawerContent(props : any){
     const router = useRouter();
