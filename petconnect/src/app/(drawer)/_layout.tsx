@@ -39,13 +39,23 @@ export default function RootLayout() {
       <GestureHandlerRootView className="flex-1">
         <Drawer drawerContent={CustomDrawerContent}>
           <Drawer.Screen
+            name="homeScreen"
+             // This is the name of the page and must match the url from root
+            options={{
+              drawerLabel: 'Match!',
+              drawerLabelStyle: { color: 'white' },
+              drawerIcon: () => <Ionicons name = "home" size={30} color={'white'} />,
+              title: 'Home',
+            }}
+          />
+          <Drawer.Screen
             name="account/login"
              // This is the name of the page and must match the url from root
             options={{
               drawerLabel: 'Mensagens',
               drawerLabelStyle: { color: 'white' },
               drawerIcon: () => <Ionicons name = "mail" size={30} color={'white'} />,
-              title: 'mensagens',
+              title: 'Mensagens',
             }}
           />
           <Drawer.Screen
@@ -55,7 +65,7 @@ export default function RootLayout() {
               drawerLabel: 'Pets',
               drawerLabelStyle: { color: 'white' },
               drawerIcon: () => <Ionicons name = "paw" size={30} color={'white'} />,
-              title: 'mensagens',
+              title: 'Pets',
             }}
           />
           <Drawer.Screen
@@ -65,7 +75,7 @@ export default function RootLayout() {
               drawerLabel: 'Novidades',
               drawerLabelStyle: { color: 'white' },
               drawerIcon: () => <Ionicons name = "newspaper" size={30} color={'white'} />,
-              title: 'mensagens',
+              title: 'Novidades',
             }}
           />
           <Drawer.Screen
@@ -75,7 +85,7 @@ export default function RootLayout() {
               drawerLabel: 'Ajuda',
               drawerLabelStyle: { color: 'white' },
               drawerIcon: () => <Ionicons name = "help-circle-outline" size={30} color={'white'} />,
-              title: 'mensagens',
+              title: 'Ajuda',
             }}
           />
         </Drawer>
