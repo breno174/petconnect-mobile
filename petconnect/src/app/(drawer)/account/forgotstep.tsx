@@ -6,13 +6,13 @@ import { Alert, Image, StyleSheet, View } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from ".";
+// import { RootStackParamList } from "../../(tabs)";
 import { useState } from "react";
 
-type NavigationProps = StackNavigationProp<RootStackParamList>;
+// type NavigationProps = StackNavigationProp<RootStackParamList>;
 
 export default function ForgotStep() {
-  const navigation = useNavigation<NavigationProps>();
+  // const navigation = useNavigation<NavigationProps>();
   const [passwrod, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -70,7 +70,7 @@ export default function ForgotStep() {
         <ThemedButton
           type="light"
           title="Voltar"
-          onPress={() => navigation.navigate("login")}
+          // onPress={() => navigation.navigate("login")}
         />
       </View>
     </ThemedView>

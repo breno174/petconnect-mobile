@@ -6,13 +6,13 @@ import { Image, View, StyleSheet } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from ".";
+// import { RootStackParamList } from "../../(tabs)";
 import { useState } from "react";
 
-type NavigationProps = StackNavigationProp<RootStackParamList>;
+// type NavigationProps = StackNavigationProp<RootStackParamList>;
 
 export default function Login() {
-  const navigation = useNavigation<NavigationProps>();
+  // const navigation = useNavigation<NavigationProps>();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
@@ -45,12 +45,12 @@ export default function Login() {
           <ThemedButton
             type="light"
             title="Cadastrar-se"
-            onPress={() => navigation.navigate("register")}
+            // onPress={() => navigation.navigate("register")}
           />
           <ThemedButton
             type="light"
             title="Recuperar Senha"
-            onPress={() => navigation.navigate("forgotpassword")}
+            // onPress={() => navigation.navigate("forgotpassword")}
           />
           <ThemedButton type="blue" title="Entrar" />
         </View>
