@@ -7,8 +7,8 @@ import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Drawer } from 'expo-router/drawer';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Drawer } from "expo-router/drawer";
 import CustomDrawerContent from "../drawer/CustomDrawerContent";
 import { useColorScheme } from "@/src/hooks/useColorScheme";
 // import { SvgXml } from "react-native-svg";
@@ -40,52 +40,78 @@ export default function RootLayout() {
         <Drawer drawerContent={CustomDrawerContent}>
           <Drawer.Screen
             name="homeScreen"
-             // This is the name of the page and must match the url from root
+            // This is the name of the page and must match the url from root
             options={{
-              drawerLabel: 'Match!',
-              drawerLabelStyle: { color: 'white' },
-              drawerIcon: () => <Ionicons name = "home" size={30} color={'white'} />,
-              title: 'Home',
+              drawerLabel: "Match!",
+              drawerLabelStyle: { color: "white" },
+              drawerIcon: () => (
+                <Ionicons name="home" size={30} color={"white"} />
+              ),
+              title: "Home",
             }}
           />
           <Drawer.Screen
             name="account/login"
-             // This is the name of the page and must match the url from root
+            // This is the name of the page and must match the url from root
             options={{
-              drawerLabel: 'Mensagens',
-              drawerLabelStyle: { color: 'white' },
-              drawerIcon: () => <Ionicons name = "mail" size={30} color={'white'} />,
-              title: 'Mensagens',
+              drawerLabel: "Mensagens",
+              drawerLabelStyle: { color: "white" },
+              drawerIcon: () => (
+                <Ionicons name="mail" size={30} color={"white"} />
+              ),
+              title: "Mensagens",
             }}
           />
           <Drawer.Screen
             name="account/register"
-             // This is the name of the page and must match the url from root
+            // This is the name of the page and must match the url from root
             options={{
-              drawerLabel: 'Pets',
-              drawerLabelStyle: { color: 'white' },
-              drawerIcon: () => <Ionicons name = "paw" size={30} color={'white'} />,
-              title: 'Pets',
+              drawerLabel: "Pets",
+              drawerLabelStyle: { color: "white" },
+              drawerIcon: () => (
+                <Ionicons name="paw" size={30} color={"white"} />
+              ),
+              title: "Pets",
             }}
           />
           <Drawer.Screen
             name="account/forgotpassword"
-             // This is the name of the page and must match the url from root
+            // This is the name of the page and must match the url from root
             options={{
-              drawerLabel: 'Novidades',
-              drawerLabelStyle: { color: 'white' },
-              drawerIcon: () => <Ionicons name = "newspaper" size={30} color={'white'} />,
-              title: 'Novidades',
+              drawerLabel: "Novidades",
+              drawerLabelStyle: { color: "white" },
+              drawerIcon: () => (
+                <Ionicons name="newspaper" size={30} color={"white"} />
+              ),
+              title: "Novidades",
             }}
           />
           <Drawer.Screen
             name="account/forgotstep"
-             // This is the name of the page and must match the url from root
+            // This is the name of the page and must match the url from root
             options={{
-              drawerLabel: 'Ajuda',
-              drawerLabelStyle: { color: 'white' },
-              drawerIcon: () => <Ionicons name = "help-circle-outline" size={30} color={'white'} />,
-              title: 'Ajuda',
+              drawerLabel: "Ajuda",
+              drawerLabelStyle: { color: "white" },
+              drawerIcon: () => (
+                <Ionicons
+                  name="help-circle-outline"
+                  size={30}
+                  color={"white"}
+                />
+              ),
+              title: "Ajuda",
+            }}
+          />
+          <Drawer.Screen
+            name="home/petprofile"
+            // This is the name of the page and must match the url from root
+            options={{
+              drawerLabel: "PetProfile",
+              drawerLabelStyle: { color: "white" },
+              drawerIcon: () => (
+                <Ionicons name="add" size={30} color={"white"} />
+              ),
+              title: "PetProfile",
             }}
           />
         </Drawer>
