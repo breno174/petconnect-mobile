@@ -111,7 +111,19 @@ export default function RootLayout() {
               drawerIcon: () => (
                 <Ionicons name="add" size={30} color={"white"} />
               ),
-              title: "PetProfile",
+              title: "PetProfile",        
+            }}
+          />
+          <Drawer.Screen
+            name="home/userdata"
+            // This is the name of the page and must match the url from root
+            options={{
+              drawerLabel: "UserData",
+              drawerLabelStyle: { color: "white" },
+              drawerIcon: () => (
+                <Ionicons name="person" size={30} color={"white"} />
+              ),
+              title: "UserData",
             }}
           />
         </Drawer>
