@@ -103,6 +103,18 @@ export default function RootLayout() {
             }}
           />
           <Drawer.Screen
+            name="home/petprofile"
+            // This is the name of the page and must match the url from root
+            options={{
+              drawerLabel: "PetProfile",
+              drawerLabelStyle: { color: "white" },
+              drawerIcon: () => (
+                <Ionicons name="add" size={30} color={"white"} />
+              ),
+              title: "PetProfile",        
+            }}
+          />
+          <Drawer.Screen
             name="home/userdata"
             // This is the name of the page and must match the url from root
             options={{
