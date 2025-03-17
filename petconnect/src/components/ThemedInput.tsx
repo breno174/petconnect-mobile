@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import React, { useState } from "react";
-=======
-import React from "react";
->>>>>>> develop
 import { View, TextInput, StyleSheet } from "react-native";
 // import Icon from 'react-native-vector-icons/FontAwesome'; // Certifique-se de instalar essa lib
 import { Entypo } from "@expo/vector-icons";
@@ -10,7 +6,6 @@ import { Entypo } from "@expo/vector-icons";
 type TypeThemedInput = {
   placeholder: string;
   value: string;
-<<<<<<< HEAD
   onChangeText: (text: string) => void; 
   children?: React.ReactNode;
   secureTextEntry?: boolean;
@@ -19,18 +14,6 @@ type TypeThemedInput = {
 export function ThemedInput({ placeholder, children, value, onChangeText, secureTextEntry}: TypeThemedInput) {
   const [text, setText] = useState("");
 
-=======
-  onChangeText: (text: string) => void;
-  children?: React.ReactNode;
-};
-
-export function ThemedInput({
-  placeholder,
-  value,
-  onChangeText,
-  children,
-}: TypeThemedInput) {
->>>>>>> develop
   return (
     <View style={styles.inputContainer}>
       {/* <Entypo name="mail" size={25} style={styles.icon} /> */}
@@ -41,11 +24,8 @@ export function ThemedInput({
         placeholderTextColor="#777"
         value={value}
         onChangeText={onChangeText}
-<<<<<<< HEAD
         selectionColor="#fff" 
         secureTextEntry={secureTextEntry}
-=======
->>>>>>> develop
       />
     </View>
   );
@@ -61,7 +41,6 @@ const styles = StyleSheet.create({
     margin: 10,
     width: "75%",
     height: 45,
-<<<<<<< HEAD
     overflow: "hidden",
   },
    input: {
@@ -71,14 +50,5 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     alignContent: "center",
     borderRadius: 15,
-=======
-  },
-  input: {
-    flex: 1,
-    color: "#fff",
-    fontSize: 17,
-    fontWeight: 600,
-    alignContent: "center",
->>>>>>> develop
   },
 });
