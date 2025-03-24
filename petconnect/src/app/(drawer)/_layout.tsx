@@ -6,14 +6,16 @@ import {
 import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Drawer } from "expo-router/drawer";
+import { useContext, useEffect } from "react";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Drawer } from 'expo-router/drawer';
 import CustomDrawerContent from "../drawer/CustomDrawerContent";
 import { useColorScheme } from "@/src/hooks/useColorScheme";
 // import { SvgXml } from "react-native-svg";
 // import AddPet from '../../assets/svgs/addPet.svg'
 import { Ionicons } from "@expo/vector-icons";
+import { AuthUserContext } from "@/src/context/authUserProvider";
+import { Redirect } from "expo-router";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -34,7 +36,16 @@ export default function RootLayout() {
     return null;
   }
 
-  return (
+  const authUserContext = useContext(AuthUserContext);
+
+  if (!authUserContext) {
+    //!!!!! HANDLE AUTHCONTEXT NOT AVAILABLE !!!!!
+    return <Redirect href="/" />
+  }
+
+  const { isAuthenticated } = authUserContext;
+
+  return isAuthenticated ? (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <GestureHandlerRootView className="flex-1">
         <Drawer drawerContent={CustomDrawerContent}>
@@ -130,5 +141,7 @@ export default function RootLayout() {
       </GestureHandlerRootView>
       <StatusBar style="auto" />
     </ThemeProvider>
-  );
+  ) : (
+    <Redirect href="/" />
+  )
 }
