@@ -20,7 +20,7 @@ import { Redirect } from "expo-router";
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+export default function DrawerLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     Nunito: require("../../../assets/fonts/Nunito-Regular.ttf"),
@@ -142,6 +142,6 @@ export default function RootLayout() {
       <StatusBar style="auto" />
     </ThemeProvider>
   ) : (
-    <Redirect href="/" />
+    <Redirect href="/auth/login" />
   )
 }

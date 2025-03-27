@@ -1,8 +1,8 @@
-import { Slot } from "expo-router";
+import { Slot, useRouter } from "expo-router";
 import { AuthUserProvider } from "../context/authUserProvider";
+import { useEffect } from "react";
 
 export default function Root() {
-    // Set up the auth context and render our layout inside of it.
     return (
         <AuthUserProvider>
             <Slot />

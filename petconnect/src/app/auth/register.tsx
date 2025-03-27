@@ -5,21 +5,22 @@ import { ThemedText } from "@/src/components/ThemedText";
 import { Image, View, StyleSheet, Alert, Platform } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Entypo } from "@expo/vector-icons";
-import { useNavigation } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useState } from "react";
 import axios, {AxiosError} from "axios";
 
-type RootStackParamList ={
-    register: undefined,
-    login: undefined
-}
+// type RootStackParamList ={
+//     register: undefined,
+//     login: undefined
+// }
 
-type RegisterScreenNavigationProp = StackNavigationProp<RootStackParamList, "register">
+// type RegisterScreenNavigationProp = StackNavigationProp<RootStackParamList, "register">
 
 
 export default function Register(){
-    const navigation = useNavigation<RegisterScreenNavigationProp>();
+    // const navigation = useNavigation<RegisterScreenNavigationProp>();
+    const router = useRouter()
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [phone, setPhone] = useState('')
@@ -45,7 +46,7 @@ export default function Register(){
 
           
 
-            navigation.navigate('login');
+            router.replace('/auth/login')
 
         } catch (error) {
             if (error instanceof AxiosError) {

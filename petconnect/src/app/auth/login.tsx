@@ -5,29 +5,30 @@ import { ThemedText } from "@/src/components/ThemedText";
 import { Image, View, StyleSheet, Alert, Platform } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Entypo } from "@expo/vector-icons";
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
 import axios, { AxiosError } from "axios";
 import { useState } from "react";
+import { useAuthUserContext } from "@/src/context/authUserProvider";
+import { LoginProps } from "@/src/interfaces/userInterface";
 
-type RootStackParamList = {
-    login: undefined,
-    forgotpassword: undefined,
-    register: undefined,
+// type RootStackParamList = {
+//     login: undefined,
+//     forgotpassword: undefined,
+//     register: undefined,
     
-}
-type  ForgotPasswordScreenNavigationProp = StackNavigationProp<RootStackParamList,"login">
+// }
+// type  ForgotPasswordScreenNavigationProp = StackNavigationProp<RootStackParamList,"login">
 
 
 
 export default function Login(){
-    const navigation = useNavigation<ForgotPasswordScreenNavigationProp>();
+    // const navigation = useNavigation<ForgotPasswordScreenNavigationProp>();
+    const { login } = useAuthUserContext()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
     async function Logar(){
-        console.log('email', email)
-        console.log('password', password)
 
         if(email === '' || password === ''){
             if (Platform.OS === 'web') {
@@ -38,26 +39,26 @@ export default function Login(){
             return
         }
 
-        const postData = {
-            email,
-            password
-        }
+        const postData = {email: email, password: password} as LoginProps
+
         console.log('postData', postData)
 
         try {
-            const response = await axios.post('http://localhost:8080/auth/login', postData)
-            const token = response.data.token
-            console.log('Token recebido:', response.data);
+            await login(postData)
+            router.replace('/(drawer)/homeScreen')
+            // const response = await axios.post('http://localhost:8080/auth/login', postData)
+            // const token = response.data.token
+            // console.log('Token recebido:', response.data);
 
-            if (Platform.OS === 'web') {
+            // if (Platform.OS === 'web') {
                
-                localStorage.setItem('authToken', token);
-            } else {
+            //     localStorage.setItem('authToken', token);
+            // } else {
                 
-                await AsyncStorage.setItem('authToken', token);
-            }
+            //     await AsyncStorage.setItem('authToken', token);
+            // }
 
-            navigation.navigate('forgotpassword');
+            // navigation.navigate('forgotpassword');
 
         } catch (error) {
             if (error instanceof AxiosError) {
@@ -91,8 +92,8 @@ export default function Login(){
                             <Entypo name="lock" size={25} style={styles.icon}  />
                         </ThemedInput>
                           
-                        <ThemedButton type="light" title="Cadastrar-se" onPress={()=>navigation.navigate('register')} />
-                        <ThemedButton type="light" title="Recuperar Senha" onPress={()=>navigation.navigate('forgotpassword')} />
+                        <ThemedButton type="light" title="Cadastrar-se" onPress={() => router.push('/auth/register')} />
+                        <ThemedButton type="light" title="Recuperar Senha" onPress={()=> router.push('/auth/forgotpassword')} />
                         <ThemedButton type="blue" title="Entrar" onPress={Logar} />
                         
                 </View>
