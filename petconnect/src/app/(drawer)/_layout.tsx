@@ -142,6 +142,6 @@ export default function DrawerLayout() {
       <StatusBar style="auto" />
     </ThemeProvider>
   ) : (
-    <Redirect href="/" />
+    <Redirect href="/auth/login" />
   )
 }

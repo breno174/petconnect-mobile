@@ -22,7 +22,7 @@ import { LoginProps } from "@/src/interfaces/userInterface";
 
 
 
-export default function Login(): JSX.Element{
+export default function Login(){
     // const navigation = useNavigation<ForgotPasswordScreenNavigationProp>();
     const { login } = useAuthUserContext()
     const [email, setEmail] = useState('')

@@ -2,7 +2,7 @@ import { createContext, useContext, ReactNode, useState, useEffect } from "react
 import { api } from "../api/axios";
 import { LoginProps, UserData } from "../interfaces/userInterface";
 import { RegisterProps } from "../interfaces/userRegisterInterface";
-import { getToken, removeToken } from "../services/tokenService";
+import { getToken, removeToken, setToken } from "../services/tokenService";
 import { AxiosResponse } from "axios";
 
 interface AuthProviderProps {
@@ -37,7 +37,7 @@ export const AuthUserProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (data: LoginProps) => {
     const response = await api.post<{ token: string }>("/auth/login", data);
-    setAuthToken(response.data.token);
+    await setToken(response.data.token);
     return response;
   };
 
