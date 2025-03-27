@@ -4,22 +4,26 @@ import { ThemedText } from "@/src/components/ThemedText";
 import { ThemedView } from "@/src/components/ThemedView";
 import { Alert, Image, StyleSheet, View } from "react-native";
 import { Entypo } from "@expo/vector-icons";
-import { useNavigation } from "expo-router";
+import { useRouter } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
 // import { RootStackParamList } from "../../(tabs)";
 import { useState } from "react";
 
 // type NavigationProps = StackNavigationProp<RootStackParamList>;
 
-export default function ForgotPassword() {
+export default function ForgotStep() {
   // const navigation = useNavigation<NavigationProps>();
-  const [email, setEmail] = useState("");
+  const router = useRouter();
+  const [passwrod, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleEnviar = () => {
-    if (email.trim() !== "") {
-      // @TODO enviar um email para troca de senha.
-      // navigation.navigate("forgotstep");
+    if (passwrod.trim() !== "" || confirmPassword.trim() !== "") {
+      // navigation.navigate("forgotstep2", { valor: email });
+      // @TODO chamda na API para trocar a senha
+      console.log("aqui trocamos a senha");
     } else {
+      console.log("não é valido");
       Alert.alert("Erro", "O campo não pode estar vazio!");
     }
   };
@@ -46,8 +50,19 @@ export default function ForgotPassword() {
         </ThemedText>
       </View>
       <View style={styles.container}>
-        <ThemedInput value={email} onChangeText={setEmail} placeholder="Email">
-          <Entypo name="mail" size={25} style={styles.icon} />
+        <ThemedInput
+          value={passwrod}
+          onChangeText={setPassword}
+          placeholder="Nova senha"
+        >
+          <Entypo name="lock" size={25} style={styles.icon} />
+        </ThemedInput>
+        <ThemedInput
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          placeholder="Confirme a senha"
+        >
+          <Entypo name="lock" size={25} style={styles.icon} />
         </ThemedInput>
         <ThemedButton
           type="blue"
@@ -58,6 +73,7 @@ export default function ForgotPassword() {
           type="light"
           title="Voltar"
           // onPress={() => navigation.navigate("login")}
+          onPress={() => router.back()}
         />
       </View>
     </ThemedView>

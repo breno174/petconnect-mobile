@@ -2,21 +2,37 @@ import { ThemedButton } from "@/src/components/ThemedButton";
 import { ThemedInput } from "@/src/components/ThemedInput";
 import { ThemedText } from "@/src/components/ThemedText";
 import { ThemedView } from "@/src/components/ThemedView";
-import { Image, StyleSheet, View } from "react-native";
+import { Alert, Image, StyleSheet, View } from "react-native";
 import { Entypo } from "@expo/vector-icons";
-import { useNavigation } from "expo-router";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { useNavigation, useRouter } from "expo-router";
+// import { StackNavigationProp } from "@react-navigation/stack";
+import { useState } from "react";
 
+/**
+ * 
 type RootStackParamList = {
   login: undefined;
-  forgotpassword: undefined,
-  };
+  forgotpassword: undefined;
+};
 
-type ForgotPasswordScreenNavigationProp = StackNavigationProp<RootStackParamList,"forgotpassword">;
+type ForgotPasswordScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "forgotpassword"
+>;
+ */
 
 export default function ForgotPassword() {
-  const navigation = useNavigation<ForgotPasswordScreenNavigationProp>();
-  
+  const router = useRouter();
+  // const navigation = useNavigation<ForgotPasswordScreenNavigationProp>();
+  const [email, setEmail] = useState("");
+  const handleEnviar = () => {
+    if (email.trim() !== "") {
+      router.push("/auth/forgotstep");
+    } else {
+      Alert.alert("Erro", "O campo não pode estar vazio!");
+    }
+  };
+
   return (
     <ThemedView style={styles.container}>
       <View style={styles.topSide}>
@@ -39,11 +55,19 @@ export default function ForgotPassword() {
         </ThemedText>
       </View>
       <View style={styles.container}>
-        <ThemedInput placeholder="Email">
+        <ThemedInput value={email} onChangeText={setEmail} placeholder="Email">
           <Entypo name="mail" size={25} style={styles.icon} />
         </ThemedInput>
-        <ThemedButton type="blue" title="Enviar" />
-        <ThemedButton type="light" title="Voltar" onPress={()=>navigation.navigate('login')} />
+        <ThemedButton
+          type="blue"
+          title="Enviar"
+          onPress={() => handleEnviar()}
+        />
+        <ThemedButton
+          type="light"
+          title="Voltar"
+          onPress={() => router.push("/auth/login")}
+        />
       </View>
     </ThemedView>
   );
