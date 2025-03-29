@@ -59,14 +59,14 @@ export default function ForgotPassword() {
           <Entypo name="mail" size={25} style={styles.icon} />
         </ThemedInput>
         <ThemedButton
-          type="blue"
-          title="Enviar"
-          onPress={() => handleEnviar()}
-        />
-        <ThemedButton
           type="light"
           title="Voltar"
           onPress={() => router.push("/auth/login")}
+        />
+        <ThemedButton
+          type="blue"
+          title="Enviar"
+          onPress={() => handleEnviar()}
         />
       </View>
     </ThemedView>

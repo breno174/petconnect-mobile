@@ -1,5 +1,9 @@
-import React from "react";
+import { useAuthUserContext } from "@/src/context/authUserProvider";
+import { UserData } from "@/src/interfaces/userInterface";
+import React, { useEffect, useState } from "react";
 import { View, Text, Image, ScrollView, StyleSheet } from "react-native";
+import { router } from "expo-router";
+import { removeToken } from "@/src/services/tokenService";
 
 const pets = [
   {
@@ -44,6 +48,25 @@ const PetCard = ({
 };
 
 const UserProfile = () => {
+  const { currentUser } = useAuthUserContext();
+  const [user, setUser] = useState<UserData | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const responseUser = await currentUser();
+        console.log("responseUser", responseUser);
+        setUser(responseUser);
+        // const datePets = await getPetsUser(responseUser.data.id);
+      } catch (error) {
+        console.log({ error: error });
+        await removeToken();
+        router.push("/auth/login");
+      }
+    };
+    fetchData();
+  });
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.profileHeader}>
@@ -52,8 +75,10 @@ const UserProfile = () => {
           style={styles.profileImage}
         />
         <View style={styles.profileHeaderText}>
-          <Text style={styles.userName}>Breno Santos</Text>
-          <Text style={styles.userRole}>@Dogparent</Text>
+          <Text style={styles.userName}>{user?.name}</Text>
+          <Text style={styles.userRole}>
+            {user?.enabled ? "disponível" : "ocupado"}
+          </Text>
         </View>
       </View>
 

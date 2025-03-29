@@ -1,4 +1,10 @@
-import { createContext, useContext, ReactNode, useState, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  ReactNode,
+  useState,
+  useEffect,
+} from "react";
 import { api } from "../api/axios";
 import { LoginProps, UserData } from "../interfaces/userInterface";
 import { RegisterProps } from "../interfaces/userRegisterInterface";
@@ -24,16 +30,16 @@ export const AuthUserContext = createContext<AuthContextData>(
 );
 
 export const AuthUserProvider: React.FC<AuthProviderProps> = ({ children }) => {
-    const [authToken, setAuthToken] = useState<string | null>(null);
+  const [authToken, setAuthToken] = useState<string | null>(null);
 
-    useEffect(() => {
-      const fetchToken = async () => {
-        const token = await getToken();
-        setAuthToken(token);
-      };
-  
-      fetchToken();
-    }, []);
+  useEffect(() => {
+    const fetchToken = async () => {
+      const token = await getToken();
+      setAuthToken(token);
+    };
+
+    fetchToken();
+  }, []);
 
   const login = async (data: LoginProps) => {
     const response = await api.post<{ token: string }>("/auth/login", data);
@@ -63,7 +69,8 @@ export const AuthUserProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   return (
     <AuthUserContext.Provider
-      value={{ isAuthenticated, login, registerUser, logout, currentUser }}>
+      value={{ isAuthenticated, login, registerUser, logout, currentUser }}
+    >
       {children}
     </AuthUserContext.Provider>
   );
