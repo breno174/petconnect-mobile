@@ -7,8 +7,8 @@ import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
 import { useContext, useEffect } from "react";
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Drawer } from 'expo-router/drawer';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Drawer } from "expo-router/drawer";
 import CustomDrawerContent from "../drawer/CustomDrawerContent";
 import { useColorScheme } from "@/src/hooks/useColorScheme";
 // import { SvgXml } from "react-native-svg";
@@ -40,7 +40,7 @@ export default function DrawerLayout() {
 
   if (!authUserContext) {
     //!!!!! HANDLE AUTHCONTEXT NOT AVAILABLE !!!!!
-    return <Redirect href="/" />
+    return <Redirect href="/auth/login" />;
   }
 
   const { isAuthenticated } = authUserContext;
@@ -62,7 +62,7 @@ export default function DrawerLayout() {
             }}
           />
           <Drawer.Screen
-            name="account/login"
+            name="auth/login"
             // This is the name of the page and must match the url from root
             options={{
               drawerLabel: "Mensagens",
@@ -74,7 +74,7 @@ export default function DrawerLayout() {
             }}
           />
           <Drawer.Screen
-            name="account/register"
+            name="auth/register"
             // This is the name of the page and must match the url from root
             options={{
               drawerLabel: "Pets",
@@ -86,7 +86,7 @@ export default function DrawerLayout() {
             }}
           />
           <Drawer.Screen
-            name="account/forgotpassword"
+            name="auth/forgotpassword"
             // This is the name of the page and must match the url from root
             options={{
               drawerLabel: "Novidades",
@@ -98,7 +98,7 @@ export default function DrawerLayout() {
             }}
           />
           <Drawer.Screen
-            name="account/forgotstep"
+            name="auth/forgotstep"
             // This is the name of the page and must match the url from root
             options={{
               drawerLabel: "Ajuda",
@@ -122,7 +122,7 @@ export default function DrawerLayout() {
               drawerIcon: () => (
                 <Ionicons name="add" size={30} color={"white"} />
               ),
-              title: "PetProfile",        
+              title: "PetProfile",
             }}
           />
           <Drawer.Screen
@@ -143,5 +143,5 @@ export default function DrawerLayout() {
     </ThemeProvider>
   ) : (
     <Redirect href="/auth/login" />
-  )
+  );
 }

@@ -3,9 +3,16 @@ import { AuthUserProvider } from "../context/authUserProvider";
 import { useEffect } from "react";
 
 export default function Root() {
-    return (
-        <AuthUserProvider>
-            <Slot />
-        </AuthUserProvider>
-    );
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/auth/login");
+    console.log("ocorre");
+  }, []);
+
+  return (
+    <AuthUserProvider>
+      <Slot />
+    </AuthUserProvider>
+  );
 }

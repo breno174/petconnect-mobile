@@ -14,7 +14,6 @@ import ForgotPassword from "./auth/forgotpassword";
 import Register from "./auth/register";
 import { Stack } from "expo-router";
 
-
 // import { createStackNavigator } from '@react-navigation/stack';
 // const Stack = createStackNavigator()
 
@@ -24,15 +23,17 @@ export default function AuthLayout() {
       <Stack.Screen name="auth/login" />
       <Stack.Screen name="auth/forgotpassword" />
       <Stack.Screen name="auth/register" />
+      <Stack.Screen name="homeScreen" />
+      <Stack.Screen name="home/petprogile" />
+      <Stack.Screen name="home/userdata" />
     </Stack>
-  
+
     // <Stack.Navigator initialRouteName="login" screenOptions={{ headerShown: false }}>
     //   <Stack.Screen name="login" component={Login} />
     //   <Stack.Screen name="forgotpassword" component={ForgotPassword} />
     //   { /**<Stack.Screen name="register" component={Register} /> */}
     //   <Stack.Screen name="Home" component={HomeScreen} />
     // </Stack.Navigator>
-
   );
 }
 // export type RootStackParamList = {
