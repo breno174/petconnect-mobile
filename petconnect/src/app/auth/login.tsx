@@ -8,9 +8,10 @@ import { Entypo } from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
 import axios, { AxiosError } from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuthUserContext } from "@/src/context/authUserProvider";
 import { LoginProps } from "@/src/interfaces/userInterface";
+import React from "react";
 
 // type RootStackParamList = {
 //     login: undefined,
@@ -22,9 +23,27 @@ import { LoginProps } from "@/src/interfaces/userInterface";
 
 export default function Login() {
   // const navigation = useNavigation<ForgotPasswordScreenNavigationProp>();
-  const { login } = useAuthUserContext();
+  const { login, currentUser } = useAuthUserContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const fetchData = async () => {
+    console.log("fetch");
+
+    try {
+      const responseUser = await currentUser();
+      console.log("responseUser", responseUser);
+      // setUser(responseUser);
+      // const datePets = await getPetsUser(responseUser.data.id);
+    } catch (error) {
+      console.log({ error: error });
+    }
+  };
+  // useEffect(() => {
+  //   console.log("ocorre");
+
+  //   fetchData();
+  // });
 
   async function Logar() {
     if (email === "" || password === "") {
@@ -42,6 +61,7 @@ export default function Login() {
 
     try {
       await login(postData);
+      await fetchData();
       router.replace("/(drawer)/homeScreen");
       // const response = await axios.post('http://localhost:8080/auth/login', postData)
       // const token = response.data.token
