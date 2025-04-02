@@ -86,6 +86,18 @@ export default function DrawerLayout() {
             }}
           />
           <Drawer.Screen
+            name="auth/registerpet"
+            // This is the name of the page and must match the url from root
+            options={{
+              drawerLabel: "Pets",
+              drawerLabelStyle: { color: "white" },
+              drawerIcon: () => (
+                <Ionicons name="paw" size={30} color={"white"} />
+              ),
+              title: "Pets",
+            }}
+          />
+          <Drawer.Screen
             name="auth/forgotpassword"
             // This is the name of the page and must match the url from root
             options={{

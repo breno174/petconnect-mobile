@@ -123,6 +123,11 @@ export default function Login() {
           />
           <ThemedButton
             type="light"
+            title="Cadastrar Pet"
+            onPress={() => router.push("/auth/registerpet")}
+          />
+          <ThemedButton
+            type="light"
             title="Recuperar Senha"
             onPress={() => router.push("/auth/forgotpassword")}
           />
