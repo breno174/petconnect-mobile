@@ -1,61 +1,32 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
+import { Pet } from '../interfaces/petInterface';
+import { PetImage } from './PetImage';
 
-const animalData = [
-  {
-    id: '1',
-    name: 'Bella',
-    breed: 'Labrador',
-    gender: 'Female',
-    image: require("../../assets/images/download.jpeg"),
-  },
-  {
-    id: '2',
-    name: 'Max',
-    breed: 'German Shepherd',
-    gender: 'Male',
-    image: require("../../assets/images/download.jpeg"),
-  },
-  {
-    id: '3',
-    name: 'Oliver',
-    breed: 'Bulldog',
-    gender: 'Male',
-    image: require("../../assets/images/download.jpeg"),
-  },
-  {
-    id: '4',
-    name: 'Luna',
-    breed: 'Golden Retriever',
-    gender: 'Female',
-    image: require("../../assets/images/download.jpeg"),
-  },
-];
+const AnimalCard = ({ pet }: { pet: Pet }) => {
 
-const AnimalCard = ({ animal }: { animal: typeof animalData[0] }) => {
-
-  const genderFontColor = animal.gender === 'Female' ? 'deeppink' : 'blue';
+  const genderFontColor = pet.gender === 'FEMALE' ? 'deeppink' : 'blue';
 
   return(
   
   <View style={styles.card}>
-    <Image source={animal.image} style={styles.image} />
-    <Text style={[styles.name, { color: genderFontColor }]}>{animal.name}</Text>
+    <PetImage petImageName={pet.image}/>
+    <Text style={[styles.name, { color: genderFontColor }]}>{pet.name}</Text>
     <Text style={styles.breed}> Raça:
-      <Text style={[styles.breed, { color: genderFontColor }]}> {animal.breed}</Text>
+      <Text style={[styles.breed, { color: genderFontColor }]}> {pet.race}</Text>
     </Text>
     <Text style={styles.gender}> Sexo:
-      <Text style={[styles.gender, { color: genderFontColor }]}> {animal.gender}</Text>
+      <Text style={[styles.gender, { color: genderFontColor }]}> {pet.gender}</Text>
     </Text>
   </View>
 )};
 
-const AnimalCardList = () => {
+const AnimalCardList = ({ petList }: { petList: Pet[] }) => {
   return (
     <ScrollView contentContainerStyle={styles.listContainer}>
       <View style={styles.row}>
-        {animalData.map((animal) => (
-          <AnimalCard key={animal.id} animal={animal} />
+        {petList.map((pet: Pet) => (
+          <AnimalCard key={pet.id} pet={pet} />
         ))}
       </View>
     </ScrollView>
