@@ -60,20 +60,20 @@ export default function Login() {
     console.log("postData", postData);
 
     try {
-      await login(postData);
-      await fetchData();
+      // await login(postData);
+      // await fetchData();
+      const response = await axios.post('http://localhost:8080/auth/login', postData)
+      const token = response.data.token
+      console.log('Token recebido:', response.data);
       router.replace("/(drawer)/homeScreen");
-      // const response = await axios.post('http://localhost:8080/auth/login', postData)
-      // const token = response.data.token
-      // console.log('Token recebido:', response.data);
 
-      // if (Platform.OS === 'web') {
+      if (Platform.OS === 'web') {
 
-      //     localStorage.setItem('authToken', token);
-      // } else {
+          localStorage.setItem('authToken', token);
+      } else {
 
-      //     await AsyncStorage.setItem('authToken', token);
-      // }
+          await AsyncStorage.setItem('authToken', token);
+      }
 
       // navigation.navigate('forgotpassword');
     } catch (error) {
@@ -121,6 +121,7 @@ export default function Login() {
             title="Cadastrar-se"
             onPress={() => router.push("/auth/register")}
           />
+         
           <ThemedButton
             type="light"
             title="Recuperar Senha"
