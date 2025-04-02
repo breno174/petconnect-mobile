@@ -85,18 +85,7 @@ export default function DrawerLayout() {
               title: "Pets",
             }}
           />
-          <Drawer.Screen
-            name="auth/registerpet"
-            // This is the name of the page and must match the url from root
-            options={{
-              drawerLabel: "Pets",
-              drawerLabelStyle: { color: "white" },
-              drawerIcon: () => (
-                <Ionicons name="paw" size={30} color={"white"} />
-              ),
-              title: "Pets",
-            }}
-          />
+         
           <Drawer.Screen
             name="auth/forgotpassword"
             // This is the name of the page and must match the url from root
@@ -135,6 +124,18 @@ export default function DrawerLayout() {
                 <Ionicons name="add" size={30} color={"white"} />
               ),
               title: "PetProfile",
+            }}
+          />
+           <Drawer.Screen
+            name="home/registerpet"
+            // This is the name of the page and must match the url from root
+            options={{
+              drawerLabel: "Pet Register",
+              drawerLabelStyle: { color: "white" },
+              drawerIcon: () => (
+                <Ionicons name="paw" size={30} color={"white"} />
+              ),
+              title: "Pet Register",
             }}
           />
           <Drawer.Screen
