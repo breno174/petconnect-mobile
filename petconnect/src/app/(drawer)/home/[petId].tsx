@@ -1,4 +1,7 @@
-import React from "react";
+import { PetImage } from "@/src/components/PetImage";
+import { Pet } from "@/src/interfaces/petInterface";
+import { useLocalSearchParams } from "expo-router";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,13 +12,41 @@ import {
 } from "react-native";
 
 const PetProfile = () => {
+  const { petId } = useLocalSearchParams();
+  const [pet, setPet] = useState<Pet | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPetData = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/pet/${petId}`);
+        const data = await response.json();
+        console.log({ data: data });
+
+        setPet(data);
+      } catch (error) {
+        console.error("Erro ao buscar dados do pet:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (petId) {
+      fetchPetData();
+    }
+  }, [petId]);
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Image
-          source={require("@/assets/images/download.jpeg")}
-          style={styles.petImage}
-        />
+        {pet?.image ? (
+          <PetImage petImageName={pet.image} />
+        ) : (
+          <Image
+            source={require("@/assets/images/download.jpeg")}
+            style={styles.petImage}
+          />
+        )}
         <View
           style={{
             flex: 1,
@@ -27,16 +58,16 @@ const PetProfile = () => {
           }}
         >
           <View>
-            <Text style={styles.petName}>Bidu</Text>
-            <Text style={styles.petBreed}>Maltês ♂</Text>
+            <Text style={styles.petName}>{pet?.name}</Text>
+            <Text style={styles.petBreed}>{pet?.race}</Text>
           </View>
           <View>
             <TouchableOpacity style={styles.verifyButton}>
               <Text style={styles.verifyText}>Verificar Vacinas</Text>
             </TouchableOpacity>
             <View style={styles.petDetails}>
-              <Text style={styles.detailItem}>5 kg</Text>
-              <Text style={styles.detailItem}>12/02/24</Text>
+              <Text style={styles.detailItem}>{pet?.gender}</Text>
+              <Text style={styles.detailItem}>{pet?.birthDate}</Text>
             </View>
           </View>
         </View>
@@ -58,8 +89,8 @@ const PetProfile = () => {
           style={styles.ownerImage}
         />
         <View>
-          <Text style={styles.ownerName}>Mark William</Text>
-          <Text style={styles.ownerMember}>Membro desde 05/02/2024</Text>
+          <Text style={styles.ownerName}>{pet?.user.name}</Text>
+          <Text style={styles.ownerMember}>{pet?.user.username}</Text>
         </View>
       </View>
     </ScrollView>
