@@ -44,6 +44,7 @@ export const AuthUserProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (data: LoginProps) => {
     const response = await api.post<{ token: string }>("/auth/login", data);
     await setToken(response.data.token);
+      setAuthToken(response.data.token);
     return response;
   };
 
@@ -62,7 +63,7 @@ export const AuthUserProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const registerUser = async (data: RegisterProps) => {
-    return api.post("/user ", data);
+    return api.post("/user", data);
   };
 
   const isAuthenticated = !!authToken;
