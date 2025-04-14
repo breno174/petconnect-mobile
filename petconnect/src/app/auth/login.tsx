@@ -8,7 +8,7 @@ import { Entypo } from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
 import axios, { AxiosError } from "axios";
-import { useEffect, useState } from "react";
+import {useEffect, useState } from "react";
 import { useAuthUserContext } from "@/src/context/authUserProvider";
 import { LoginProps } from "@/src/interfaces/userInterface";
 import React from "react";
@@ -39,11 +39,11 @@ export default function Login() {
       console.log({ error: error });
     }
   };
-  // useEffect(() => {
-  //   console.log("ocorre");
+  useEffect(() => {
+    console.log("ocorre");
 
-  //   fetchData();
-  // });
+    fetchData();
+  });
 
   async function Logar() {
     if (email === "" || password === "") {
@@ -60,19 +60,24 @@ export default function Login() {
     console.log("postData", postData);
 
     try {
-      // await login(postData);
-      // await fetchData();
-      const response = await axios.post('http://localhost:8080/auth/login', postData)
-      const token = response.data.token
-      console.log('Token recebido:', response.data);
+      await login(postData);
+      await fetchData();
+      // const response = await axios.post('http://localhost:8080/auth/login', postData)
+      // const token = response.data.token
+      // console.log('Token recebido:', response.data);
+
+      const userLogin = await currentUser()
+
+      console.log("usuariologado", userLogin)
+      
       router.replace("/(drawer)/homeScreen");
 
       if (Platform.OS === 'web') {
 
-          localStorage.setItem('authToken', token);
+          localStorage.setItem('userLogin', JSON.stringify(userLogin));
       } else {
 
-          await AsyncStorage.setItem('authToken', token);
+          await AsyncStorage.setItem('userLoginMobile', JSON.stringify(userLogin));
       }
 
       // navigation.navigate('forgotpassword');

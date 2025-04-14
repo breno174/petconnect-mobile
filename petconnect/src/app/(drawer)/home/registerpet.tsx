@@ -10,8 +10,13 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useNavigation, useRouter } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
-import React, { SetStateAction, useState } from "react";
+import React, { SetStateAction, useEffect, useState } from "react";
 import axios, {AxiosError} from "axios";
+
+import { useAuthUserContext } from "../../../context/authUserProvider";
+
+// import { UserData } from "@/src/interfaces/userInterface";
+
 
 
 
@@ -31,17 +36,56 @@ export default function Register(){
     const [birthDate, setBirthDate] = useState('')
     const [specie, setSpecie] = useState('')
     const [race, setRace] = useState('')
-   
 
+    let userLogin: { id: number } 
+
+    
     async function Cadastrar() {
+        
+            if (Platform.OS === 'web') {
+        
+            const storedUser = localStorage.getItem('userLogin');
+                userLogin = storedUser ? JSON.parse(storedUser) : null;
+            } else {
+                const storedUser = await AsyncStorage.getItem('userLoginMobile');
+                userLogin = storedUser ? JSON.parse(storedUser) : null;
+            }
+        
         const postData ={
             name, 
             gender,
             birthDate,
             specie,
-            race
+            race,
+            user:{
+                id: userLogin.id
+            }
         }
         console.log('postData', postData)
+
+      
+
+        try {
+            const response = await axios.post('http://localhost:8080/pet', postData)
+        
+            console.log('response', response.data);
+
+          
+
+            router.replace("/(drawer)/homeScreen");
+
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                console.error('Erro no Axios:', error.response?.data || error.message);
+            } else {
+                console.error('Erro desconhecido:', error);
+            }
+            if (Platform.OS === 'web') {
+                window.alert('Erro ao fazer login. Tente novamente.');
+            } else {
+                Alert.alert('Erro ao fazer login. Tente novamente.');
+            }
+        }
 
        
     }
