@@ -60,20 +60,20 @@ export default function Login() {
     console.log("postData", postData);
 
     try {
-      // await login(postData);
-      // await fetchData();
-      const response = await axios.post('http://localhost:8080/auth/login', postData)
-      const token = response.data.token
-      console.log('Token recebido:', response.data);
+      await login(postData);
+      await fetchData();
+      // const response = await axios.post('http://localhost:8080/auth/login', postData)
+      // const token = response.data.token
+      // console.log('Token recebido:', response.data);
       router.replace("/(drawer)/homeScreen");
 
-      if (Platform.OS === 'web') {
+      // if (Platform.OS === 'web') {
 
-          localStorage.setItem('authToken', token);
-      } else {
+      //     localStorage.setItem('authToken', token);
+      // } else {
 
-          await AsyncStorage.setItem('authToken', token);
-      }
+      //     await AsyncStorage.setItem('authToken', token);
+      // }
 
       // navigation.navigate('forgotpassword');
     } catch (error) {
