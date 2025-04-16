@@ -8,7 +8,7 @@ import { Entypo } from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
 import axios, { AxiosError } from "axios";
-import {useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuthUserContext } from "@/src/context/authUserProvider";
 import { LoginProps } from "@/src/interfaces/userInterface";
 import React from "react";
@@ -43,7 +43,7 @@ export default function Login() {
     console.log("ocorre");
 
     fetchData();
-  });
+  }, []);
 
   async function Logar() {
     if (email === "" || password === "") {
@@ -66,18 +66,19 @@ export default function Login() {
       // const token = response.data.token
       // console.log('Token recebido:', response.data);
 
-      const userLogin = await currentUser()
+      const userLogin = await currentUser();
 
-      console.log("usuariologado", userLogin)
-      
+      console.log("usuariologado", userLogin);
+
       router.replace("/(drawer)/homeScreen");
 
-      if (Platform.OS === 'web') {
-
-          localStorage.setItem('userLogin', JSON.stringify(userLogin));
+      if (Platform.OS === "web") {
+        localStorage.setItem("userLogin", JSON.stringify(userLogin));
       } else {
-
-          await AsyncStorage.setItem('userLoginMobile', JSON.stringify(userLogin));
+        await AsyncStorage.setItem(
+          "userLoginMobile",
+          JSON.stringify(userLogin)
+        );
       }
 
       // navigation.navigate('forgotpassword');
@@ -126,7 +127,7 @@ export default function Login() {
             title="Cadastrar-se"
             onPress={() => router.push("/auth/register")}
           />
-         
+
           <ThemedButton
             type="light"
             title="Recuperar Senha"
