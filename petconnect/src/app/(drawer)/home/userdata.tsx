@@ -51,21 +51,22 @@ const UserProfile = () => {
   const { currentUser } = useAuthUserContext();
   const [user, setUser] = useState<UserData | null>(null);
 
+  const fetchData = async () => {
+    try {
+      const responseUser = await currentUser();
+      console.log("responseUser", responseUser);
+      setUser(responseUser);
+      // const datePets = await getPetsUser(responseUser.data.id);
+    } catch (error) {
+      console.log({ error: error });
+      await removeToken();
+      router.push("/auth/login");
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const responseUser = await currentUser();
-        console.log("responseUser", responseUser);
-        setUser(responseUser);
-        // const datePets = await getPetsUser(responseUser.data.id);
-      } catch (error) {
-        console.log({ error: error });
-        await removeToken();
-        router.push("/auth/login");
-      }
-    };
     fetchData();
-  });
+  }, []);
 
   return (
     <ScrollView style={styles.container}>
