@@ -133,6 +133,7 @@ export default function Home() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <HomeCardList petList= {filteredPets}/>
       <FilterBottomSheet
         filterParameters={filterParameters}
         setFilterParameters={setFilterParameters}
@@ -141,7 +142,6 @@ export default function Home() {
         minAge={ageRange[0]}
         maxAge={ageRange[1]}
       />
-      <HomeCardList petList= {filteredPets}/>
     </SafeAreaView>
   );
 };

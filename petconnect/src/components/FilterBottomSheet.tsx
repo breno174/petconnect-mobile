@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Button, ScrollView } from 'react-native';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { AgeFilter, GenderFilter, BreedFilter, SpeciesFilter } from './FilterOptions';
 import { FilterProps } from '../interfaces/filterInterface';
+import { ThemedButton } from './ThemedButton';
 
 interface FilterDrawerProps {
   filterParameters: FilterProps;
@@ -21,35 +22,39 @@ export const FilterBottomSheet: React.FC<FilterDrawerProps> = ({
   minAge,
   maxAge,
 }) => {
+  const sheetRef = useRef<BottomSheet>(null);
+  const [scrollEnabled, setScrollEnabled] = useState(true);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const snapPoints = ['40%', '80%'];
+  const snapPoints = useMemo(() => ["10%", "40%", "80%"], []);
 
-  const handleOpenSheet = () => {
-    setIsSheetOpen(true);
-  };
 
-  const handleCloseSheet = () => {
-    setIsSheetOpen(false);
-  };
+  // const handleSheetChange = useCallback(() => {
+  //   setIsSheetOpen(true);
+  // }, []);
+  const handleSnapPress = useCallback((index: number) => {
+    sheetRef.current?.snapToIndex(index);
+  }, []);
+  const handleClosePress = useCallback(() => {
+    sheetRef.current?.close();
+  }, []);
+
 
   return (
     <>
-      <Button title="Filtros" onPress={handleOpenSheet} />
+      <Button title= {"Filtros"} onPress={() => handleSnapPress(2)} />
       <BottomSheet
-        index={isSheetOpen ? 1 : -1}
+        ref = {sheetRef}
         snapPoints={snapPoints}
-        onChange={(index: Number) => {
-          if (index === -1) {
-            setIsSheetOpen(false);
-          } else {
-            setIsSheetOpen(true);
-          }
-        }}
-        enablePanDownToClose={true}
+        index = {-1}
+        enableDynamicSizing={false}
+        enablePanDownToClose={false}
       >
         <View style={styles.sheetContent}>
-          <Text style={styles.header}>Filtros</Text>
-          <ScrollView style={styles.scrollView}>
+          <View style={styles.topContainer}>
+            <Text style={styles.header}>Filtros</Text>
+            <ThemedButton title='Aplicar' type='blue-small' onPress={handleClosePress}/>
+          </View>
+          <ScrollView scrollEnabled={scrollEnabled} style={styles.scrollView}>
             <View style={styles.filterSection}>
               <Text style={styles.filterLabel}>Espécie</Text>
               <SpeciesFilter
@@ -83,6 +88,7 @@ export const FilterBottomSheet: React.FC<FilterDrawerProps> = ({
                 maxAge={maxAge}
                 filterParameters={filterParameters}
                 setFilterParameters={setFilterParameters}
+                setScrollEnabled={setScrollEnabled}
               />
             </View>
           </ScrollView>
@@ -94,7 +100,7 @@ export const FilterBottomSheet: React.FC<FilterDrawerProps> = ({
 
 const styles = StyleSheet.create({
   sheetContent: {
-    padding: 16,
+    padding: 15,
     flex: 1,
   },
   header: {
@@ -113,4 +119,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 8,
   },
+  topContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  }
 });
