@@ -39,7 +39,13 @@ export default function Register() {
     // const [birthDate, setBirthDate] = useState('')
     // const [specie, setSpecie] = useState('')
     // const [race, setRace] = useState('')
-    const [petBody, setPetBody] = useState<PetBody>({ gender: "MALE", birthDate: new Date() } as PetBody);
+    const [petBody, setPetBody] = useState<PetBody>({
+        name: '',
+        gender: 'MALE',
+        birthDate: new Date(),
+        specie: '',
+        race: ''
+    });
     const [image, setImage] = useState<string | null>(null);
     const [uploadUrl, setUploadUrl] = useState('');
     const [error, setError] = useState('');
@@ -158,7 +164,7 @@ export default function Register() {
 
                         <TouchableOpacity
                             style={[styles.radioButton, petBody.gender === 'MALE' && styles.selected]}
-                            onPress={() => setPetBody({ ...petBody, name: 'MALE' })}
+                            onPress={() => setPetBody({ ...petBody, gender: 'MALE' })}
                         >
                             <Entypo name="man" size={20} color={petBody.gender === 'MALE' ? 'blue' : 'gray'} />
                             <Text style={styles.radioText}>MACHO</Text>
@@ -166,7 +172,7 @@ export default function Register() {
 
                         <TouchableOpacity
                             style={[styles.radioButton, petBody.gender === 'FEMALE' && styles.selected]}
-                            onPress={() => setPetBody({ ...petBody, name: 'FEMALE' })}
+                            onPress={() => setPetBody({ ...petBody, gender: 'FEMALE' })}
                         >
                             <FontAwesome5 name="female" size={20} color={petBody.gender === 'FEMALE' ? 'pink' : 'gray'} />
                             <Text style={styles.radioText}>FÊMEA</Text>
