@@ -11,9 +11,12 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useNavigation, useRouter } from "expo-router";
 import { StackNavigationProp } from "@react-navigation/stack";
 import React, { SetStateAction, useEffect, useState } from "react";
-import axios, {AxiosError} from "axios";
-
+import axios, { AxiosError } from "axios";
+import * as ImagePicker from 'expo-image-picker';
 import { useAuthUserContext } from "../../../context/authUserProvider";
+import { PetBody } from "@/src/interfaces/petBodyInterface";
+import { createPet } from "@/src/api/create-pet";
+import { uploadPetImage } from "@/src/api/upload-pet-image";
 
 // import { UserData } from "@/src/interfaces/userInterface";
 
@@ -28,49 +31,79 @@ import { useAuthUserContext } from "../../../context/authUserProvider";
 // type RegisterScreenNavigationProp = StackNavigationProp<RootStackParamList, "register">
 
 
-export default function Register(){
+export default function Register() {
     // const navigation = useNavigation<RegisterScreenNavigationProp>();
     const router = useRouter()
-    const [name, setName] = useState('')
-    const [gender, setGender] = useState('MALE')
-    const [birthDate, setBirthDate] = useState('')
-    const [specie, setSpecie] = useState('')
-    const [race, setRace] = useState('')
+    // const [name, setName] = useState('')
+    // const [gender, setGender] = useState('MALE')
+    // const [birthDate, setBirthDate] = useState('')
+    // const [specie, setSpecie] = useState('')
+    // const [race, setRace] = useState('')
+    const [petBody, setPetBody] = useState<PetBody>({ gender: "MALE", birthDate: new Date() } as PetBody);
+    const [image, setImage] = useState<string | null>(null);
+    const [uploadUrl, setUploadUrl] = useState('');
+    const [error, setError] = useState('');
 
-    let userLogin: { id: number } 
+    // let userLogin: { id: number } 
 
-    
-    async function Cadastrar() {
-        
-            if (Platform.OS === 'web') {
-        
-            const storedUser = localStorage.getItem('userLogin');
-                userLogin = storedUser ? JSON.parse(storedUser) : null;
-            } else {
-                const storedUser = await AsyncStorage.getItem('userLoginMobile');
-                userLogin = storedUser ? JSON.parse(storedUser) : null;
-            }
-        
-        const postData ={
-            name, 
-            gender,
-            birthDate,
-            specie,
-            race,
-            user:{
-                id: userLogin.id
-            }
+    const pickImage = async () => {
+        const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (!permission.granted) {
+            alert('Permission required!');
+            return;
         }
-        console.log('postData', postData)
 
-      
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['images'],
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            const picked = result.assets[0].uri;
+            setImage(picked);
+        }
+    };
+
+    async function Cadastrar() {
+
+        // if (Platform.OS === 'web') {
+
+        // const storedUser = localStorage.getItem('userLogin');
+        //     userLogin = storedUser ? JSON.parse(storedUser) : null;
+        // } else {
+        //     const storedUser = await AsyncStorage.getItem('userLoginMobile');
+        //     userLogin = storedUser ? JSON.parse(storedUser) : null;
+        // }
+
+        // const postData ={
+        //     name, 
+        //     gender,
+        //     birthDate,
+        //     specie,
+        //     race,
+        //     user:{
+        //         id: userLogin.id
+        //     }
+        // }
+        // console.log('postData', postData)
+
+
 
         try {
-            const response = await axios.post('http://localhost:8080/pet', postData)
-        
+            const response = await createPet(petBody)
+
             console.log('response', response.data);
 
-          
+            if(!image) return;
+
+            const formData = new FormData();
+            formData.append("image", image);
+
+            await uploadPetImage(formData, response.data.id).catch(error => console.log(error))
+
+
 
             router.replace("/(drawer)/homeScreen");
 
@@ -87,78 +120,81 @@ export default function Register(){
             }
         }
 
-       
+
     }
 
-    return(
+    return (
         <ThemedView style={styles.container}>
             <View>
-                <View style={styles.logo}>
-                          <Image
-                            source={require("@/assets/images/connect.png")}
-                            style={{ alignSelf: "center" }}
-                          />
-                </View>
-                 <ThemedText
-                          type="title"
-                          style={styles.titleContainer}
-                        >Cadastro PET
-                        </ThemedText>
+                <TouchableOpacity onPress={pickImage}>
+                    <Image
+                        source={
+                            image
+                                ? { uri: image }
+                                : require("@/assets/images/connect.png")
+                        }
+                        style={styles.logo}
+                        resizeMode="cover"
+                    />
+                </TouchableOpacity>
+                <ThemedText
+                    type="title"
+                    style={styles.titleContainer}
+                >Cadastro PET
+                </ThemedText>
 
                 <View style={styles.container}>
-                <input
-                            type="date"
-                            value={birthDate} // Converte para string YYYY-MM-DD
-                            onChange={(e) => setBirthDate(e.target.value)} // Correção aqui
-                            style={{ borderWidth: 1, padding: 8, borderRadius: 5 }}
-                        />
+                    <input
+                        type="date"
+                        value={petBody.birthDate.toISOString().slice(0, 10)}
+                        onChange={(e) => {
+                            const newDate = new Date(e.target.value);
+                            setPetBody({ ...petBody, birthDate: newDate });
+                        }}
+                        style={{ borderWidth: 1, padding: 8, borderRadius: 5 }}
+                    />
 
-                        <View style={styles.genderContainer}>
-                        
-                        <TouchableOpacity 
-                            style={[styles.radioButton, gender === 'MALE' && styles.selected]}
-                            onPress={() => setGender('MALE')}
+                    <View style={styles.genderContainer}>
+
+                        <TouchableOpacity
+                            style={[styles.radioButton, petBody.gender === 'MALE' && styles.selected]}
+                            onPress={() => setPetBody({ ...petBody, name: 'MALE' })}
                         >
-                            <Entypo name="man" size={20} color={gender === 'MALE' ? 'blue' : 'gray'} />
+                            <Entypo name="man" size={20} color={petBody.gender === 'MALE' ? 'blue' : 'gray'} />
                             <Text style={styles.radioText}>MACHO</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity 
-                            style={[styles.radioButton, gender === 'FEMALE' && styles.selected]}
-                            onPress={() => setGender('FEMALE')}
+                        <TouchableOpacity
+                            style={[styles.radioButton, petBody.gender === 'FEMALE' && styles.selected]}
+                            onPress={() => setPetBody({ ...petBody, name: 'FEMALE' })}
                         >
-                            <FontAwesome5 name="female" size={20} color={gender === 'FEMALE' ? 'pink' : 'gray'} />
+                            <FontAwesome5 name="female" size={20} color={petBody.gender === 'FEMALE' ? 'pink' : 'gray'} />
                             <Text style={styles.radioText}>FÊMEA</Text>
                         </TouchableOpacity>
                     </View>
-                       
 
-                        <ThemedInput placeholder="Nome" value={name} onChangeText={setName}>
-                            <Entypo name="user" size={25} style={styles.icon} />
-                        </ThemedInput>
-                        {/* <ThemedInput placeholder="Genero" value={gender} onChangeText={setGender}>
+
+                    <ThemedInput placeholder="Nome" value={petBody.name} onChangeText={name => setPetBody({ ...petBody, name: name })}>
+                        <Entypo name="user" size={25} style={styles.icon} />
+                    </ThemedInput>
+                    {/* <ThemedInput placeholder="Genero" value={gender} onChangeText={setGender}>
                             <Entypo name="users" size={25} style={styles.icon} />
                         </ThemedInput> */}
-                        {/* <ThemedInput placeholder="Aniversário" value={birthDate} onChangeText={setBirthDate}>
+                    {/* <ThemedInput placeholder="Aniversário" value={birthDate} onChangeText={setBirthDate}>
                             <Entypo name="calendar" size={25} style={styles.icon} />
                         </ThemedInput> */}
-                           {/* Aniversário (Date Picker) */}
-                          
-                       
-                       
-    
-  
-                                
-                        <ThemedInput placeholder="Especie" value={specie} onChangeText={setSpecie}>
-                            <Entypo name="feather" size={25} style={styles.icon} />
-                        </ThemedInput>
-                        <ThemedInput placeholder="Raça" value={race} onChangeText={setRace}>
-                            <Entypo name="v-card" size={25} style={styles.icon} />
-                        </ThemedInput>
-                      
-                       
-                        <ThemedButton type="blue" title="Cadastrar" onPress={Cadastrar} />
-                        
+                    {/* Aniversário (Date Picker) */}
+
+                    <ThemedInput placeholder="Especie" value={petBody.specie} onChangeText={specie => setPetBody({ ...petBody, specie: specie })}>
+                        <Entypo name="feather" size={25} style={styles.icon} />
+                    </ThemedInput>
+                    <ThemedInput placeholder="Raça" value={petBody.race} onChangeText={race => setPetBody({ ...petBody, race: race })}>
+                        <Entypo name="v-card" size={25} style={styles.icon} />
+                    </ThemedInput>
+
+
+                    <ThemedButton type="blue" title="Cadastrar" onPress={Cadastrar} />
+
                 </View>
 
             </View>
@@ -166,7 +202,7 @@ export default function Register(){
     )
 }
 const styles = StyleSheet.create({
-    container:{
+    container: {
         flex: 1,
         gap: 3,
         backgroundColor: "#fff",
@@ -177,48 +213,54 @@ const styles = StyleSheet.create({
     },
     titleContainer: {
         margin: "auto",
-        justifyContent:"center",
+        justifyContent: "center",
         alignItems: "center",
         gap: 8,
         color: "#0496ff",
         fontWeight: 400,
-      },
-      stepContainer: {
+    },
+    stepContainer: {
         gap: 8,
         marginBottom: 8,
-      },
+    },
     logo: {
         height: 178,
         width: 178,
         margin: 10,
     },
-    icon:{
-        marginLeft:10,
-        marginRight:10
+    icon: {
+        marginLeft: 10,
+        marginRight: 10
     },
-    genderContainer: { 
-        flexDirection: 'row', 
-        alignItems: 'center', 
-        marginVertical: 10 },
-    label: { 
+    genderContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 10
+    },
+    label: {
         fontSize: 16,
-         marginRight: 10 },
-    radioButton: { 
-        flexDirection: 'row', 
-        alignItems: 'center', 
-        padding: 10, borderWidth: 1, 
-        borderRadius: 5, 
-        marginRight: 10 },
-    selected: { 
-        borderColor: 'blue', 
-        backgroundColor: '#E0F7FA' },
-    radioText: { 
-        marginLeft: 5 },
-    dateInput: { 
-        flexDirection: 'row', 
-        alignItems: 'center', 
-        padding: 10, 
+        marginRight: 10
+    },
+    radioButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10, borderWidth: 1,
+        borderRadius: 5,
+        marginRight: 10
+    },
+    selected: {
+        borderColor: 'blue',
+        backgroundColor: '#E0F7FA'
+    },
+    radioText: {
+        marginLeft: 5
+    },
+    dateInput: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10,
         borderWidth: 1,
-        borderRadius: 5, 
-        marginVertical: 10 },
+        borderRadius: 5,
+        marginVertical: 10
+    },
 })
