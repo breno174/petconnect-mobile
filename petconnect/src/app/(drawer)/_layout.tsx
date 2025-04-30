@@ -85,7 +85,7 @@ export default function DrawerLayout() {
               title: "Pets",
             }}
           />
-         
+
           <Drawer.Screen
             name="auth/forgotpassword"
             // This is the name of the page and must match the url from root
@@ -126,7 +126,7 @@ export default function DrawerLayout() {
               title: "PetProfile",
             }}
           />
-           <Drawer.Screen
+          <Drawer.Screen
             name="home/registerpet"
             // This is the name of the page and must match the url from root
             options={{
