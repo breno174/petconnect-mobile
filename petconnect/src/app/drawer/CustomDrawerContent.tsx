@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { View, Button, StyleSheet } from "react-native";
+import React from "react";
+import { View, StyleSheet } from "react-native";
 import {
   DrawerContentScrollView,
   DrawerItem,
@@ -8,9 +8,11 @@ import {
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
+import { useAuthUserContext } from "@/src/context/authUserProvider";
 
 export default function CustomDrawerContent(props: any) {
   const router = useRouter();
+  const { logout } = useAuthUserContext();
 
   return (
     <LinearGradient
@@ -42,6 +44,15 @@ export default function CustomDrawerContent(props: any) {
           icon={() => <Ionicons name="settings" size={30} color={"white"} />}
           onPress={() => {}}
         />
+        <DrawerItem
+          label="Sair"
+          labelStyle={styles.labelStyle}
+          icon={() => <Ionicons name="log-out" size={24} color={"white"} />}
+          onPress={() => {
+            logout();
+            router.replace("/auth/login");
+          }}
+        />
       </View>
     </LinearGradient>
   );
@@ -68,5 +79,9 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     justifyContent: "flex-end",
     width: "100%",
+  },
+  labelStyle: {
+    color: "white",
+    fontSize: 15,
   },
 });
