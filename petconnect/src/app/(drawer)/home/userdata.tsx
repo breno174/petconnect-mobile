@@ -12,12 +12,14 @@ const pets = [
     sex: "M",
     breed: "Bulldogue",
     image: require("@/assets/images/download.jpeg"),
+    petId: '404404404404'
   },
   {
     name: "Bolt",
     sex: "M",
     breed: "Beagle",
     image: require("@/assets/images/download.jpeg"),
+    petId: '404404404'
   },
 ];
 
@@ -26,12 +28,14 @@ const PetCard = ({
   sex,
   breed,
   image,
+  petId,
   onDelete
 }: {
   name: string;
   sex: string;
   breed: string;
   image: any;
+  petId: string;
   onDelete?: () => void
 }) => {
   return (
@@ -128,7 +132,7 @@ const UserProfile = () => {
         <Text style={styles.sectionTitle}>PETS 🐾</Text>
         <View style={styles.petsContainer}>
           {pets.map((pet, index) => (
-            <PetCard key={index} {...pet} onDelete={() => deletePet(pet.name)} /> //PRECISA TROCAR PELO ID QUANDO AJUSTAR O GET DE PETS
+            <PetCard key={index} {...pet} onDelete={() => deletePet(pet.petId)} /> //PRECISA TROCAR PELO ID QUANDO AJUSTAR O GET DE PETS
           ))}
         </View>
       </View>
