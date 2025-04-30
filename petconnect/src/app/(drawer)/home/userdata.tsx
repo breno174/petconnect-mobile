@@ -1,9 +1,10 @@
 import { useAuthUserContext } from "@/src/context/authUserProvider";
 import { UserData } from "@/src/interfaces/userInterface";
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, ScrollView, StyleSheet } from "react-native";
+import { View, Text, Image, ScrollView, StyleSheet, Button } from "react-native";
 import { router } from "expo-router";
 import { removeToken } from "@/src/services/tokenService";
+import { deletePet } from "@/src/api/delete-pet";
 
 const pets = [
   {
@@ -25,11 +26,13 @@ const PetCard = ({
   sex,
   breed,
   image,
+  onDelete
 }: {
   name: string;
   sex: string;
   breed: string;
   image: any;
+  onDelete?: () => void
 }) => {
   return (
     <View style={styles.petCard}>
@@ -43,6 +46,9 @@ const PetCard = ({
       <Text>
         Raça: <Text style={styles.bold}>{breed}</Text>
       </Text>
+      <View style={{ marginTop: 8 }}>
+        <Button title="Delete" onPress={onDelete} color="#d9534f" />
+      </View>
     </View>
   );
 };
@@ -122,7 +128,7 @@ const UserProfile = () => {
         <Text style={styles.sectionTitle}>PETS 🐾</Text>
         <View style={styles.petsContainer}>
           {pets.map((pet, index) => (
-            <PetCard key={index} {...pet} />
+            <PetCard key={index} {...pet} onDelete={() => deletePet(pet.name)} /> //PRECISA TROCAR PELO ID QUANDO AJUSTAR O GET DE PETS
           ))}
         </View>
       </View>
