@@ -139,6 +139,18 @@ export default function DrawerLayout() {
             }}
           />
           <Drawer.Screen
+            name="home/chatscreen"
+            // This is the name of the page and must match the url from root
+            options={{
+              drawerLabel: "Chat Screen",
+              drawerLabelStyle: { color: "white" },
+              drawerIcon: () => (
+                <Ionicons name="chatbubble-ellipses" size={30} color={"white"} />
+              ),
+              title: "Chat Screen",
+            }}
+          />
+          <Drawer.Screen
             name="home/userdata"
             // This is the name of the page and must match the url from root
             options={{
