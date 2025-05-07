@@ -151,6 +151,15 @@ export default function DrawerLayout() {
             }}
           />
           <Drawer.Screen
+            name="home/chatscreenconversation"
+            // This is the name of the page and must match the url from root
+            options={{
+              title: "Chat Screen Conversation",
+              drawerItemStyle: { display: "none" }
+            }}
+          />
+          
+          <Drawer.Screen
             name="home/userdata"
             // This is the name of the page and must match the url from root
             options={{
