@@ -1,89 +1,67 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import {View, StyleSheet} from "react-native";
-import { GiftedChat, IMessage } from 'react-native-gifted-chat';
-// import { collection, addDoc, onSnapshot, orderBy, query } from 'firebase/firestore';
-// import {db} from '@/firebaseConfig' 
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, Pressable } from 'react-native';
+import { router, useNavigation } from "expo-router";
+import axios from 'axios';
 
-export default function ChatScreen() {
-  const [messages, setMessages] = useState<IMessage[]>([]);
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
 
-  // useEffect(() => {
-  //   const q = query(collection(db, 'messages'), orderBy('createdAt', 'desc'));
-  //   const unsubscribe = onSnapshot(q, (snapshot) => {
-  //     const msgs = snapshot.docs.map((doc) => {
-  //       const data = doc.data();
-  //       return {
-  //         _id: doc.id,
-  //         text: data.text,
-  //         createdAt: data.createdAt.toDate(),
-  //         user: data.user,
-  //       };
-  //     });
-  //     setMessages(msgs);
-  //   });
+export default function UserListScreen() {
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  //   return () => unsubscribe();
-  // }, []);
   useEffect(() => {
-    // Mensagens simuladas para teste
-    setMessages([
-      {
-        _id: '1',
-        text: 'Olá! Isso é uma mensagem de teste.',
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'Bot',
-        },
-      },
-      {
-        _id: '2',
-        text: 'Bem-vindo ao chat!',
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'Bot',
-        },
-      },
-    ]);
+    axios.get<User[]>('http://localhost:8080/user')  
+      .then(response => {
+        setUsers(response.data);
+      })
+      .catch(error => {
+        console.error('Erro ao buscar usuários:', error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
+  if (loading) {
+    return <ActivityIndicator style={styles.loader} />;
+  }
 
-  // const onSend = useCallback(async (messages: IMessage[] = []) => {
-  //   const { _id, createdAt, text, user } = messages[0];
-  //   await addDoc(collection(db, 'messages'), {
-  //     _id,
-  //     createdAt,
-  //     text,
-  //     user,
-  //   });
-  // }, []);
-  const onSend = useCallback((newMessages: IMessage[] = []) => {
-    setMessages((previousMessages) =>
-      GiftedChat.append(previousMessages, newMessages)
-    );
-  }, []);
+  
+  function clickUser(item: User){
+    console.log('usuario clickado', item)
+    router.push("/home/chatscreenconversation")
+  }
 
   return (
-    
-
     <View style={styles.container}>
-    <GiftedChat
-      messages={messages}
-      onSend={(messages) => onSend(messages)}
-      user={{
-        _id: 1,
-        name: 'Usuário',
-      }}
-    />
-  </View>
-    
+      <FlatList
+        data={users}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+
+          <View style={styles.item}>
+            
+            <Pressable  onPress={() => clickUser(item)}>
+              
+              <Text style={styles.name}>{item.name}</Text>
+              <Text>{item.email}</Text>
+            
+            </Pressable>
+          
+          </View>
+        )}
+      />
+    </View>
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5', // <- Aqui define o fundo do chat
-  },
-});
 
+const styles = StyleSheet.create({
+  loader: { flex: 1, justifyContent: 'center' },
+  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
+  item: { marginBottom: 16, borderBottomWidth: 1, paddingBottom: 8 },
+  name: { fontWeight: 'bold', fontSize: 16 },
+});
