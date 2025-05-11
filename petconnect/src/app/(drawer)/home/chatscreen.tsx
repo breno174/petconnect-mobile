@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, Pressable } from 'react-native';
 import { router, useNavigation } from "expo-router";
