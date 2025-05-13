@@ -37,11 +37,11 @@ export default function Login() {
       // const datePets = await getPetsUser(responseUser.data.id);
     } catch (error) {
       console.log({ error: error });
+      return null;
     }
   };
-  useEffect(() => {
-    console.log("ocorre");
 
+  useEffect(() => {
     fetchData();
   }, []);
 
