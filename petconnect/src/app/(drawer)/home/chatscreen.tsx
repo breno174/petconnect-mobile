@@ -46,7 +46,7 @@ export default function UserListScreen() {
 
   function clickUser(item: User) {
     console.log("usuario clickado", item);
-    router.push("/home/chatscreenconversation");
+    router.push(`/home/chatscreenconversation/${item.id}`);
   }
 
   return (
