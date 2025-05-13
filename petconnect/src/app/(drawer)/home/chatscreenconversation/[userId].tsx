@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState, useContext } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Text, Pressable } from "react-native";
 import { GiftedChat, IMessage } from "react-native-gifted-chat";
 import { createClient } from "@supabase/supabase-js";
 import { AuthUserContext } from "@/src/context/authUserProvider";
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from "@env";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -15,6 +15,7 @@ interface User {
 }
 
 export default function ChatScreen() {
+  const router = useRouter();
   const { currentUser } = useContext(AuthUserContext);
   const [loggedUser, setLoggedUser] = useState<User>();
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -111,6 +112,11 @@ export default function ChatScreen() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <Pressable onPress={() => router.back()}>
+          <Text style={styles.backText}>{"< Voltar"}</Text>
+        </Pressable>
+      </View>
       <GiftedChat
         messages={messages}
         onSend={(messages) => onSend(messages)}
@@ -127,5 +133,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
+  },
+  header: {
+    paddingTop: 50,
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+    backgroundColor: "#ffffff",
+  },
+  backText: {
+    fontSize: 16,
+    color: "#007AFF",
   },
 });
