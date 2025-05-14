@@ -5,37 +5,37 @@ import { View, Text, Image, ScrollView, StyleSheet, Button } from "react-native"
 import { router } from "expo-router";
 import { removeToken } from "@/src/services/tokenService";
 import { deletePet } from "@/src/api/delete-pet";
+import { Pet } from "@/src/interfaces/petInterface";
+import { getPetsUser } from "@/src/api/get-pets-user";
 
-const pets = [
-  {
-    name: "Teemo",
-    sex: "M",
-    breed: "Bulldogue",
-    image: require("@/assets/images/download.jpeg"),
-    petId: '404404404404'
-  },
-  {
-    name: "Bolt",
-    sex: "M",
-    breed: "Beagle",
-    image: require("@/assets/images/download.jpeg"),
-    petId: '404404404'
-  },
-];
+// const pets = [
+//   {
+//     name: "Teemo",
+//     sex: "M",
+//     breed: "Bulldogue",
+//     image: require("@/assets/images/download.jpeg"),
+//     petId: '404404404404'
+//   },
+//   {
+//     name: "Bolt",
+//     sex: "M",
+//     breed: "Beagle",
+//     image: require("@/assets/images/download.jpeg"),
+//     petId: '404404404'
+//   },
+// ];
 
 const PetCard = ({
   name,
   sex,
   breed,
   image,
-  petId,
   onDelete
 }: {
   name: string;
   sex: string;
   breed: string;
   image: any;
-  petId: string;
   onDelete?: () => void
 }) => {
   return (
@@ -60,13 +60,16 @@ const PetCard = ({
 const UserProfile = () => {
   const { currentUser } = useAuthUserContext();
   const [user, setUser] = useState<UserData | null>(null);
+  const [pets, setPet] = useState<Pet[]>([]);
 
   const fetchData = async () => {
     try {
       const responseUser = await currentUser();
       console.log("responseUser", responseUser);
       setUser(responseUser);
-      // const datePets = await getPetsUser(responseUser.data.id);
+      const petsData = await getPetsUser(responseUser.id);
+      setPet(petsData)
+      console.log("petsData", petsData)
     } catch (error) {
       console.log({ error: error });
       await removeToken();
@@ -77,6 +80,12 @@ const UserProfile = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  function onDeletePetClick(id: string) {
+    deletePet(id)
+      .then(fetchData)
+      .catch(error => console.log(error))
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -132,7 +141,7 @@ const UserProfile = () => {
         <Text style={styles.sectionTitle}>PETS 🐾</Text>
         <View style={styles.petsContainer}>
           {pets.map((pet, index) => (
-            <PetCard key={index} {...pet} onDelete={() => deletePet(pet.petId)} /> //PRECISA TROCAR PELO ID QUANDO AJUSTAR O GET DE PETS
+            <PetCard key={index} name={pet.name} sex={pet.gender} breed={pet.race} image={pet.image} onDelete={() => onDeletePetClick(pet.id.toString())} /> //PRECISA TROCAR PELO ID QUANDO AJUSTAR O GET DE PETS
           ))}
         </View>
       </View>
