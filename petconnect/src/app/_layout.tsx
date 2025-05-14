@@ -7,7 +7,6 @@ export default function Root() {
 
   useEffect(() => {
     router.replace("/auth/login");
-    console.log("ocorre");
   }, []);
 
   return (
