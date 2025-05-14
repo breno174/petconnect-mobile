@@ -7,6 +7,7 @@ import { removeToken } from "@/src/services/tokenService";
 import { deletePet } from "@/src/api/delete-pet";
 import { Pet } from "@/src/interfaces/petInterface";
 import { getPetsUser } from "@/src/api/get-pets-user";
+import { editPet } from "@/src/api/edit-pet";
 
 // const pets = [
 //   {
@@ -30,13 +31,15 @@ const PetCard = ({
   sex,
   breed,
   image,
-  onDelete
+  onDelete,
+  onEdit,
 }: {
   name: string;
   sex: string;
   breed: string;
   image: any;
-  onDelete?: () => void
+  onDelete?: () => void;
+  onEdit?: () => void;
 }) => {
   return (
     <View style={styles.petCard}>
@@ -52,6 +55,7 @@ const PetCard = ({
       </Text>
       <View style={{ marginTop: 8 }}>
         <Button title="Delete" onPress={onDelete} color="#d9534f" />
+        <Button title="Edit" onPress={onEdit} color="#0496ff" />
       </View>
     </View>
   );
@@ -85,6 +89,10 @@ const UserProfile = () => {
     deletePet(id)
       .then(fetchData)
       .catch(error => console.log(error))
+  }
+
+  function onEditPetClick(id: string){
+    router.push(`/(drawer)/home/profileActions/${id}`);
   }
 
   return (
@@ -141,7 +149,7 @@ const UserProfile = () => {
         <Text style={styles.sectionTitle}>PETS 🐾</Text>
         <View style={styles.petsContainer}>
           {pets.map((pet, index) => (
-            <PetCard key={index} name={pet.name} sex={pet.gender} breed={pet.race} image={pet.image} onDelete={() => onDeletePetClick(pet.id.toString())} /> //PRECISA TROCAR PELO ID QUANDO AJUSTAR O GET DE PETS
+            <PetCard key={index} name={pet.name} sex={pet.gender} breed={pet.race} image={pet.image} onEdit={() => onEditPetClick(pet.id.toString())} onDelete={() => onDeletePetClick(pet.id.toString())} />
           ))}
         </View>
       </View>

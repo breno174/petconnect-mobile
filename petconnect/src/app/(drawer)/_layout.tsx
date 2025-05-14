@@ -118,6 +118,15 @@ export default function DrawerLayout() {
             name="home/[petId]"
             // This is the name of the page and must match the url from root
             options={{
+              title:"Profile do Pet",
+              drawerItemStyle: { display: "none" }
+            }}
+          />
+          <Drawer.Screen
+            name="home/profileActions/[petId]"
+            // This is the name of the page and must match the url from root
+            options={{
+              title: "Edição de Pet",
               drawerItemStyle: { display: "none" }
             }}
           />
