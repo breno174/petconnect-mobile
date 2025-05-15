@@ -94,7 +94,6 @@ const UserProfile = () => {
   function onEditPetClick(id: string){
     router.push(`/(drawer)/home/profileActions/${id}`);
   }
-
   return (
     <ScrollView style={styles.container}>
       <View style={styles.profileHeader}>
