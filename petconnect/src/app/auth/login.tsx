@@ -27,23 +27,39 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const fetchData = async () => {
-    console.log("fetch");
 
-    try {
-      const responseUser = await currentUser();
-      console.log("responseUser", responseUser);
-      // setUser(responseUser);
-      // const datePets = await getPetsUser(responseUser.data.id);
-    } catch (error) {
-      console.log({ error: error });
-      return null;
-    }
-  };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    async function checkAuth() {
+      try {
+        const user = await currentUser();
+        if (user) {
+          router.replace("/(drawer)/homeScreen");
+        }
+      } catch (error) {
+        console.log("No user logged in", error);
+      }
+    }
+    checkAuth();
+  }, [currentUser]);
+
+  // const fetchData = async () => {
+  //   console.log("fetch");
+
+  //   try {
+  //     const responseUser = await currentUser();
+  //     console.log("responseUser", responseUser);
+  //     // setUser(responseUser);
+  //     // const datePets = await getPetsUser(responseUser.data.id);
+  //   } catch (error) {
+  //     console.log({ error: error });
+  //     return null;
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
 
   async function Logar() {
     if (email === "" || password === "") {
@@ -61,7 +77,7 @@ export default function Login() {
 
     try {
       await login(postData);
-      await fetchData();
+      // await fetchData();
       // const response = await axios.post('http://localhost:8080/auth/login', postData)
       // const token = response.data.token
       // console.log('Token recebido:', response.data);
@@ -70,7 +86,6 @@ export default function Login() {
 
       console.log("usuariologado", userLogin);
 
-      router.replace("/(drawer)/homeScreen");
 
       if (Platform.OS === "web") {
         localStorage.setItem("userLogin", JSON.stringify(userLogin));
@@ -81,6 +96,7 @@ export default function Login() {
         );
       }
 
+      router.replace("/(drawer)/homeScreen");
       // navigation.navigate('forgotpassword');
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -98,10 +114,10 @@ export default function Login() {
   return (
     <ThemedView style={styles.container}>
       <View>
-        <View style={styles.logo}>
+        <View style={styles.logoContainer}>
           <Image
-            source={require("@/assets/images/connect.png")}
-            style={{ alignSelf: "center" }}
+            source={require("@/assets/images/connectLogo.png")}
+            style={styles.logo}
           />
         </View>
 
@@ -149,10 +165,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignContent: "center",
   },
+  logoContainer: {
+    marginVertical: 20,
+    alignItems: "center",
+  },
   logo: {
     height: 178,
     width: 178,
-    margin: 10,
   },
   icon: {
     marginLeft: 10,

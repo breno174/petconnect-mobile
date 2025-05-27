@@ -25,7 +25,8 @@ export default function DrawerLayout() {
   const [loaded] = useFonts({
     Nunito: require("../../../assets/fonts/Nunito-Regular.ttf"),
   });
-
+  const authUserContext = useContext(AuthUserContext);
+  
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
@@ -36,7 +37,6 @@ export default function DrawerLayout() {
     return null;
   }
 
-  const authUserContext = useContext(AuthUserContext);
 
   if (!authUserContext) {
     //!!!!! HANDLE AUTHCONTEXT NOT AVAILABLE !!!!!
@@ -122,27 +122,42 @@ export default function DrawerLayout() {
             }}
           />
           <Drawer.Screen
+            name="home/profileActions/[petId]"
+            // This is the name of the page and must match the url from root
+            options={{
+              drawerItemStyle: { display: "none" },
+              title: "Editar Pet"
+            }}
+          />
+          <Drawer.Screen
+            name="home/chatscreenconversation/[userId]"
+            // This is the name of the page and must match the url from root
+            options={{
+              drawerItemStyle: { display: "none" },
+            }}
+          />
+          <Drawer.Screen
             name="home/registerpet"
             // This is the name of the page and must match the url from root
             options={{
-              drawerLabel: "Pet Register",
+              drawerLabel: "Cadastrar Pet!",
               drawerLabelStyle: { color: "white" },
               drawerIcon: () => (
                 <Ionicons name="paw" size={30} color={"white"} />
               ),
-              title: "Pet Register",
+              title: "Cadastro de Pet",
             }}
           />
           <Drawer.Screen
             name="home/chatscreen"
             // This is the name of the page and must match the url from root
             options={{
-              drawerLabel: "Chat Screen",
+              drawerLabel: "Chat",
               drawerLabelStyle: { color: "white" },
               drawerIcon: () => (
                 <Ionicons name="chatbubble-ellipses" size={30} color={"white"} />
               ),
-              title: "Chat Screen",
+              title: "Chat",
             }}
           />
           <Drawer.Screen
@@ -158,7 +173,7 @@ export default function DrawerLayout() {
             name="home/userdata"
             // This is the name of the page and must match the url from root
             options={{
-              drawerLabel: "UserData",
+              drawerLabel: "Perfil",
               drawerLabelStyle: { color: "white" },
               drawerIcon: () => (
                 <Ionicons name="person" size={30} color={"white"} />

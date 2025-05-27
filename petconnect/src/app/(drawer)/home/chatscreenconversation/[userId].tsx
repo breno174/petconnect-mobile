@@ -11,7 +11,7 @@ const variavable = {
   anonkey: process.env.EXPO_PUBLIC_API_SUPABASE_ANON_KEY
 }
 
-const supabase = createClient(variavable.supabaseurl, variavable.anonkey);
+const supabase = createClient(variavable.supabaseurl!, variavable.anonkey!);
 interface User {
   id: number;
    name: string;

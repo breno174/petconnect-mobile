@@ -17,22 +17,20 @@ export const PetImage: React.FC<PetImageProps> = ({ petImageName }) => {
 
     const fetchImage = async () => {
 
-        if(!petImageName){
-            setImageUrl(defaultIMG)
+        if(!petImageName?.includes("supabase.co")){
+            if (isMounted) setImageUrl('default')
             return
         }
       
         try {
-            const url = await getPetImage(petImageName)
-
             if (isMounted) {
-                setImageUrl(url);
+                setImageUrl(petImageName);
             }
         } catch (err) {
             console.error('Error fetching image:', err);
             if (isMounted) {
                 setError('Failed to load image');
-                setImageUrl(defaultIMG)
+                setImageUrl('default')
             }
         }
     };
@@ -45,27 +43,26 @@ export const PetImage: React.FC<PetImageProps> = ({ petImageName }) => {
       };
     }, [petImageName]);
   
-    if (error) {
-      return (
-        <View style={styles.placeholder}>
-          <Image source={defaultIMG} style={styles.image} />
-          <Text style={styles.errorText}>{error}</Text>
-        </View>
-      );
-    }
-
   return (
     <>
-      {imageUrl ? (
-        <Image
-          source={{ uri: imageUrl }}
-          style={styles.image}
-          alt={petImageName || "Default"}
-          accessibilityLabel={petImageName || "Default"}
-        />
+      {!(imageUrl === 'default') ? (
+        <View>
+          <Image
+            source={imageUrl? { uri: imageUrl } : defaultIMG}
+            style={styles.image}
+            alt={petImageName || 'Default'}
+            accessibilityLabel={petImageName || 'Default'}
+            />
+        </View>
       ) : (
-        <View style={styles.placeholder}>
-          <ActivityIndicator size="large" color="#0000ff" />
+        <View>
+          <Image
+            source={defaultIMG}
+            style={styles.image}
+            alt={petImageName || 'Default'}
+            accessibilityLabel={petImageName || 'Default'}
+            />
+            <Text style={styles.errorText}>Falha ao carregar imagem.</Text>
         </View>
       )}
     </>
@@ -76,12 +73,14 @@ const styles = StyleSheet.create({
     image: {
       width: '100%',
       height: 200,
-      borderBottomWidth: 4,
-      borderBottomColor: 'skyblue',
+      borderTopStartRadius: 10,
+      borderTopEndRadius: 10
     },
     placeholder: {
       width: '100%',
       height: 200,
+      borderTopStartRadius: 10,
+      borderTopEndRadius: 10,
       borderBottomWidth: 4,
       borderBottomColor: 'skyblue',
       backgroundColor: 'lightgray',
@@ -89,7 +88,9 @@ const styles = StyleSheet.create({
       alignItems: 'center',
     },
     errorText: {
+      position: 'absolute',
       color: 'red',
-      marginTop: 10,
+      bottom: 0,
+      padding: 1
     },
   });
