@@ -172,12 +172,10 @@ export default function DrawerLayout() {
             // This is the name of the page and must match the url from root
             options={{
               drawerLabel: "Cadastrar Pet!",
-              drawerLabel: "Cadastrar Pet!",
               drawerLabelStyle: { color: "white" },
               drawerIcon: () => (
                 <Ionicons name="paw" size={30} color={"white"} />
               ),
-              title: "Cadastro de Pet",
               title: "Cadastro de Pet",
             }}
           />
@@ -186,12 +184,10 @@ export default function DrawerLayout() {
             // This is the name of the page and must match the url from root
             options={{
               drawerLabel: "Chat",
-              drawerLabel: "Chat",
               drawerLabelStyle: { color: "white" },
               drawerIcon: () => (
                 <Ionicons name="chatbubble-ellipses" size={30} color={"white"} />
               ),
-              title: "Chat",
               title: "Chat",
             }}
           />
@@ -208,7 +204,6 @@ export default function DrawerLayout() {
             name="home/userdata"
             // This is the name of the page and must match the url from root
             options={{
-              drawerLabel: "Perfil",
               drawerLabel: "Perfil",
               drawerLabelStyle: { color: "white" },
               drawerIcon: () => (
