@@ -102,12 +102,22 @@ export default function Register() {
 
             console.log('response', response.data);
 
-            if(!image) return;
+            if (!image) return;
 
             const formData = new FormData();
-            formData.append("image", image);
+            const responseImage = await fetch(image);
+            const blob = await responseImage.blob()
+            // const file = {
+            //     uri: image,
+            //     name: `pet-${response.data.id}.jpg`, // Use a meaningful name
+            //     type: blob.type || 'image/jpeg', // Fallback to JPEG if type is unknown
+            // };
 
-            await uploadPetImage(formData, response.data.id).catch(error => console.log(error))
+            const petId = response.data.id
+
+            formData.append("file", blob,`pet-${petId}.jpg`); // Use 'file' to match backend
+
+            await uploadPetImage(formData, petId).catch(error => console.log(error))
 
 
 
@@ -131,23 +141,28 @@ export default function Register() {
 
     return (
         <ThemedView style={styles.container}>
+
             <View>
-                <TouchableOpacity onPress={pickImage}>
-                    <Image
-                        source={
-                            image
-                                ? { uri: image }
-                                : require("@/assets/images/connect.png")
-                        }
-                        style={styles.logo}
-                        resizeMode="cover"
-                    />
-                </TouchableOpacity>
-                <ThemedText
+                <View style={styles.logoContainer}>
+                    <TouchableOpacity onPress={pickImage}>
+                        <Image
+                            source={
+                                image
+                                    ? { uri: image }
+                                    : require("@/assets/images/connectAdd.png")
+                            }
+                            style={styles.logo}
+                            resizeMode="cover"
+                        />
+                        <text style={styles.text}>Clique para adicionar a foto do seu pet!</text>
+                    </TouchableOpacity>
+
+                </View>
+                {/* <ThemedText
                     type="title"
                     style={styles.titleContainer}
                 >Cadastro PET
-                </ThemedText>
+                </ThemedText> */}
 
                 <View style={styles.container}>
                     <input
@@ -157,7 +172,7 @@ export default function Register() {
                             const newDate = new Date(e.target.value);
                             setPetBody({ ...petBody, birthDate: newDate });
                         }}
-                        style={{ borderWidth: 1, padding: 8, borderRadius: 5 }}
+                        style={{ height: 20, borderWidth: 1, padding: 8, borderRadius: 5 }}
                     />
 
                     <View style={styles.genderContainer}>
@@ -191,7 +206,7 @@ export default function Register() {
                         </ThemedInput> */}
                     {/* Aniversário (Date Picker) */}
 
-                    <ThemedInput placeholder="Especie" value={petBody.specie} onChangeText={specie => setPetBody({ ...petBody, specie: specie })}>
+                    <ThemedInput placeholder="Espécie" value={petBody.specie} onChangeText={specie => setPetBody({ ...petBody, specie: specie })}>
                         <Entypo name="feather" size={25} style={styles.icon} />
                     </ThemedInput>
                     <ThemedInput placeholder="Raça" value={petBody.race} onChangeText={race => setPetBody({ ...petBody, race: race })}>
@@ -232,7 +247,10 @@ const styles = StyleSheet.create({
     logo: {
         height: 178,
         width: 178,
-        margin: 10,
+    },
+    logoContainer: {
+        marginVertical: 10,
+        alignItems: "center",
     },
     icon: {
         marginLeft: 10,
@@ -243,8 +261,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginVertical: 10
     },
-    label: {
-        fontSize: 16,
+    text: {
+        fontSize: 12,
         marginRight: 10
     },
     radioButton: {

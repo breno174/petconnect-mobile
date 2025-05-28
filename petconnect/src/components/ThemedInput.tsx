@@ -6,25 +6,27 @@ import { Entypo } from "@expo/vector-icons";
 type TypeThemedInput = {
   placeholder: string;
   value: string;
-  onChangeText: (text: string) => void; 
+  onChangeText: (text: string) => void;
   children?: React.ReactNode;
   secureTextEntry?: boolean;
 };
 
-export function ThemedInput({ placeholder, children, value, onChangeText, secureTextEntry}: TypeThemedInput) {
+export function ThemedInput({ placeholder, children, value, onChangeText, secureTextEntry }: TypeThemedInput) {
   const [text, setText] = useState("");
 
   return (
     <View style={styles.inputContainer}>
       {/* <Entypo name="mail" size={25} style={styles.icon} /> */}
-      {children}
+      <View style={styles.iconWrapper}>
+        {children}
+      </View>
       <TextInput
         style={styles.input}
         placeholder={placeholder}
         placeholderTextColor="#777"
         value={value}
         onChangeText={onChangeText}
-        selectionColor="#fff" 
+        selectionColor="#fff"
         secureTextEntry={secureTextEntry}
       />
     </View>
@@ -37,18 +39,31 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#e4e4e4",
     borderRadius: 15,
-    paddingHorizontal: 10,
-    margin: 10,
+    margin: 8,
     width: "75%",
     height: 45,
     overflow: "hidden",
+    position: "relative",
   },
-   input: {
+  iconWrapper: {
+    position: "absolute",
+    left: 10,
+    top: "50%",
+    transform: [{ translateY: -12.5 }],
+    justifyContent: "center",
+    alignItems: "center",
+    width: 30,
+    height: 25,
+  },
+  input: {
     flex: 1,
+    borderRadius:15,
+    width:"75%",
     color: "black",
     fontSize: 17,
-    fontWeight: 600,
-    alignContent: "center",
-    borderRadius: 15,
+    fontWeight: "600",
+    paddingLeft: 45,
+    paddingRight: 10,
+    height: "100%",
   },
 });
