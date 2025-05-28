@@ -2,7 +2,7 @@ import { ThemedView } from "@/src/components/ThemedView";
 import { ThemedInput } from "@/src/components/ThemedInput";
 import { ThemedButton } from "@/src/components/ThemedButton";
 import { ThemedText } from "@/src/components/ThemedText";
-import { Image, View, StyleSheet, Alert, Platform, TouchableOpacity, Text, TextInput } from "react-native";
+import { Image, View, StyleSheet, Alert, Platform, TouchableOpacity, Text, TextInput, ActivityIndicator } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -13,11 +13,13 @@ import { PetBody } from "@/src/interfaces/petBodyInterface";
 import { uploadPetImage } from "@/src/api/upload-pet-image";
 import { Pet } from "@/src/interfaces/petInterface";
 import { editPet } from "@/src/api/edit-pet";
+import { usePetContext } from "@/src/context/petContext";
 
 
 
 export default function Register() {
     const router = useRouter()
+    const { selectedPet } = usePetContext();
     const [petBody, setPetBody] = useState<PetBody>({
         name: '',
         gender: 'MALE',
@@ -26,44 +28,46 @@ export default function Register() {
         race: ''
     });
     const [image, setImage] = useState<string | null>(null);
-    const [uploadUrl, setUploadUrl] = useState('');
+    const [initialImage, setInitialImage] = useState<string | null>(null);
     const [error, setError] = useState('');
-    const { petId } = useLocalSearchParams();
-    const [pet, setPet] = useState<Pet | null>(null);
-    const [loading, setLoading] = useState(true);
+    // const { petId } = useLocalSearchParams();
+    // const [pet, setPet] = useState<Pet | null>(null);
+    const [loading, setLoading] = useState(false);
+
+    // useEffect(() => {
+    //     const fetchPetData = async () => {
+    //         try {
+    //             const response = await fetch(`http://localhost:8080/pet/${petId}`);
+    //             const data = await response.json();
+    //             console.log({ data: data });
+
+    //             setPet(data);
+    //         } catch (error) {
+    //             console.error("Erro ao buscar dados do pet:", error);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+
+    //     if (petId) {
+    //         fetchPetData();
+    //     }
+    // }, [petId]);
 
     useEffect(() => {
-        const fetchPetData = async () => {
-            try {
-                const response = await fetch(`http://localhost:8080/pet/${petId}`);
-                const data = await response.json();
-                console.log({ data: data });
-
-                setPet(data);
-            } catch (error) {
-                console.error("Erro ao buscar dados do pet:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (petId) {
-            fetchPetData();
+        if (selectedPet) {
+            setImage(selectedPet.image)
+            setInitialImage(selectedPet.image)
+            const tempBirthDate = new Date(selectedPet.birthDate);
+            setPetBody({
+                name: selectedPet.name,
+                gender: selectedPet.gender,
+                birthDate: tempBirthDate,
+                specie: selectedPet.specie,
+                race: selectedPet.race,
+            });
         }
-    }, [petId]);
-
-    useEffect(() => {
-        if (pet) {
-          const tempBirthDate = new Date(pet.birthDate);
-          setPetBody({
-            name: pet.name,
-            gender: pet.gender,
-            birthDate: tempBirthDate,
-            specie: pet.specie,
-            race: pet.race,
-          });
-        }
-       }, [pet]);
+    }, [selectedPet]);
 
 
     const pickImage = async () => {
@@ -89,20 +93,38 @@ export default function Register() {
     async function Update() {
 
         try {
-            const response = await editPet(petBody, pet!.id.toString())
+            if (!image) {
+                if (Platform.OS === "web") {
+                    window.alert("Necessário uma foto para cadastrar o Pet.");
+                } else {
+                    Alert.alert("Necessário uma foto para cadastrar o Pet.");
+                }
+                return;
+            }
+
+            setLoading(true)
+            const response = await editPet(petBody, selectedPet!.id.toString())
 
             console.log('response', response.data);
 
-            if (!image) return;
+            if (!(image === initialImage)) {
+                const formData = new FormData();
+                const responseImage = await fetch(image);
+                const blob = await responseImage.blob()
+                const petId = response.data.id
+    
+                formData.append("file", blob, `pet-${petId}.jpg`);
+    
+                await uploadPetImage(formData, petId).catch(error => console.log(error))
+            }
+            // const file = {
+            //     uri: image,
+            //     name: `pet-${response.data.id}.jpg`, // Use a meaningful name
+            //     type: blob.type || 'image/jpeg', // Fallback to JPEG if type is unknown
+            // };
 
-            const formData = new FormData();
-            formData.append("image", image);
-
-            await uploadPetImage(formData, response.data.id).catch(error => console.log(error))
-
-
-
-            router.replace("/(drawer)/homeScreen");
+            setLoading(false)
+            router.replace({ pathname: "/(drawer)/home/userdata", params: { refreshKey: Date.now().toString() } });
 
         } catch (error) {
             if (error instanceof AxiosError) {
@@ -123,22 +145,21 @@ export default function Register() {
     return (
         <ThemedView style={styles.container}>
             <View>
-                <TouchableOpacity onPress={pickImage}>
-                    <Image
-                        source={
-                            image
-                                ? { uri: image }
-                                : require("@/assets/images/connect.png")
-                        }
-                        style={styles.logo}
-                        resizeMode="cover"
-                    />
-                </TouchableOpacity>
-                <ThemedText
-                    type="title"
-                    style={styles.titleContainer}
-                >Cadastro PET
-                </ThemedText>
+                <View style={styles.logoContainer}>
+                    <TouchableOpacity onPress={pickImage}>
+                        <Image
+                            source={
+                                image
+                                    ? { uri: image }
+                                    : require("@/assets/images/connectAdd.png")
+                            }
+                            style={styles.logo}
+                            resizeMode="cover"
+                        />
+                        <Text style={styles.text}>Clique para adicionar uma foto!</Text>
+                    </TouchableOpacity>
+
+                </View>
 
                 <View style={styles.container}>
                     <input
@@ -178,13 +199,16 @@ export default function Register() {
                     <ThemedInput placeholder="Especie" value={petBody.specie} onChangeText={specie => setPetBody({ ...petBody, specie: specie })}>
                         <Entypo name="feather" size={25} style={styles.icon} />
                     </ThemedInput>
-                    
+
                     <ThemedInput placeholder="Raça" value={petBody.race} onChangeText={race => setPetBody({ ...petBody, race: race })}>
                         <Entypo name="v-card" size={25} style={styles.icon} />
                     </ThemedInput>
 
-
-                    <ThemedButton type="blue" title="Atualizar" onPress={Update} />
+                    {loading ? (
+                        <ActivityIndicator size="small" color='blue' />
+                    ):(
+                        <ThemedButton type="blue" title="Atualizar" onPress={Update} />
+                    )}
 
                 </View>
 
@@ -213,6 +237,18 @@ const styles = StyleSheet.create({
     stepContainer: {
         gap: 8,
         marginBottom: 8,
+    },
+    logoContainer: {
+        marginVertical: 10,
+        alignItems: "center",
+        justifyContent: 'center'
+    },
+    text: {
+        fontSize: 12,
+        marginRight: 10,
+        bottom: 0,
+        fontWeight: 'bold',
+        textAlign: 'center',
     },
     logo: {
         height: 178,

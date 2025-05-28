@@ -2,7 +2,7 @@ import { ThemedView } from "@/src/components/ThemedView";
 import { ThemedInput } from "@/src/components/ThemedInput";
 import { ThemedButton } from "@/src/components/ThemedButton";
 import { ThemedText } from "@/src/components/ThemedText";
-import { Image, View, StyleSheet, Alert, Platform, TouchableOpacity, Text, TextInput } from "react-native";
+import { Image, View, StyleSheet, Alert, Platform, TouchableOpacity, Text, TextInput, ActivityIndicator } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Entypo } from "@expo/vector-icons";
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -47,7 +47,7 @@ export default function Register() {
         race: ''
     });
     const [image, setImage] = useState<string | null>(null);
-    const [uploadUrl, setUploadUrl] = useState('');
+    const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState('');
 
     // let userLogin: { id: number } 
@@ -98,11 +98,20 @@ export default function Register() {
 
 
         try {
+
+            if (!image) {
+                if (Platform.OS === "web") {
+                    window.alert("Necessário uma foto para cadastrar o Pet.");
+                } else {
+                    Alert.alert("Necessário uma foto para cadastrar o Pet.");
+                }
+                return;
+            }
+            setLoading(true)
             const response = await createPet(petBody)
 
             console.log('response', response.data);
 
-            if (!image) return;
 
             const formData = new FormData();
             const responseImage = await fetch(image);
@@ -115,13 +124,23 @@ export default function Register() {
 
             const petId = response.data.id
 
-            formData.append("file", blob,`pet-${petId}.jpg`); // Use 'file' to match backend
+            formData.append("file", blob, `pet-${petId}.jpg`); // Use 'file' to match backend
 
             await uploadPetImage(formData, petId).catch(error => console.log(error))
+            await uploadPetImage(formData, petId).catch(error => console.log(error))
 
+            setPetBody({
+                name: '',
+                gender: 'MALE',
+                birthDate: new Date(),
+                specie: '',
+                race: ''
+            })
 
+            setImage(null)
 
-            router.replace("/(drawer)/homeScreen");
+            setLoading(false)
+            router.replace({ pathname: "/(drawer)/home/userdata", params: { refreshKey: Date.now().toString() } });
 
         } catch (error) {
             if (error instanceof AxiosError) {
@@ -130,9 +149,9 @@ export default function Register() {
                 console.error('Erro desconhecido:', error);
             }
             if (Platform.OS === 'web') {
-                window.alert('Erro ao fazer login. Tente novamente.');
+                window.alert('Erro ao fazer cadastro. Tente novamente.');
             } else {
-                Alert.alert('Erro ao fazer login. Tente novamente.');
+                Alert.alert('Erro ao fazer cadastro. Tente novamente.');
             }
         }
 
@@ -141,6 +160,7 @@ export default function Register() {
 
     return (
         <ThemedView style={styles.container}>
+
 
             <View>
                 <View style={styles.logoContainer}>
@@ -154,7 +174,7 @@ export default function Register() {
                             style={styles.logo}
                             resizeMode="cover"
                         />
-                        <text style={styles.text}>Clique para adicionar a foto do seu pet!</text>
+                        <Text style={styles.text}>Clique para adicionar uma foto!</Text>
                     </TouchableOpacity>
 
                 </View>
@@ -214,7 +234,11 @@ export default function Register() {
                     </ThemedInput>
 
 
-                    <ThemedButton type="blue" title="Cadastrar" onPress={Cadastrar} />
+                    {loading ? (
+                                            <ActivityIndicator size="small" color='blue' />
+                                        ):(
+                                            <ThemedButton type="blue" title="Cadastrar" onPress={Cadastrar} />
+                                        )}
 
                 </View>
 
@@ -247,10 +271,13 @@ const styles = StyleSheet.create({
     logo: {
         height: 178,
         width: 178,
+        paddingHorizontal: 10,
+        marginHorizontal: 10,
     },
     logoContainer: {
         marginVertical: 10,
         alignItems: "center",
+        justifyContent: 'center'
     },
     icon: {
         marginLeft: 10,
@@ -263,7 +290,10 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 12,
-        marginRight: 10
+        marginRight: 10,
+        bottom: 0,
+        fontWeight: 'bold',
+        textAlign: 'center',
     },
     radioButton: {
         flexDirection: 'row',

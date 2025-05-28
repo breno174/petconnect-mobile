@@ -1,24 +1,62 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import HomeCardList from '../../components/HomeCardList';
 import { getPets } from '@/src/api/get-pets';
 import { Pet } from '@/src/interfaces/petInterface';
 import { FilterProps } from '@/src/interfaces/filterInterface';
 import { FilterBottomSheet } from '@/src/components/FilterBottomSheet';
+import { useAuthUserContext } from '@/src/context/authUserProvider';
+import { useFocusEffect } from 'expo-router';
+import { UserData } from '@/src/interfaces/userInterface';
+
+type FilterBottomSheetRef = {
+  close: () => void;
+  open: () => void;
+};
 
 export default function Home() {
   const [pets, setPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [filteredPets, setFilteredPets] = useState<Pet[]>([]);
+  const { currentUser } = useAuthUserContext();
+  const filterRef = useRef<FilterBottomSheetRef>(null);
+  const [user, setUser] = useState< UserData | null>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      const timeout = setTimeout(() => {
+        filterRef.current?.close?.();
+      }, 50); // 100ms delay to ensure BottomSheet is mounted
+
+      console.log("Calling ref.close() in focus effect");
+      return () => clearTimeout(timeout);
+    }, [])
+  );
   // const navigation = useNavigation();
 
-  // Fetch pets on component mount
+  const fetchCurrentUser = async () => {
+  if (user) return user; // Use cached user
+  try {
+    const response = await currentUser();
+    setUser(response);
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
   useEffect(() => {
     const fetchPets = async () => {
       try {
+        const responseUser = await fetchCurrentUser();
         const data = await getPets();
-        setPets(data);
+        const showData = data.filter(
+          (pet) =>
+            pet.user.id != responseUser.id
+        );
+        setPets(showData);
       } catch (err) {
         setError('Failed to fetch pets.');
         console.error(err);
@@ -118,7 +156,7 @@ export default function Home() {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Loading pets...</Text>
+        <Text>Procurando pets...</Text>
       </View>
     );
   }
@@ -133,8 +171,9 @@ export default function Home() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <HomeCardList petList= {filteredPets}/>
+      <HomeCardList petList={filteredPets} />
       <FilterBottomSheet
+        ref={filterRef}
         filterParameters={filterParameters}
         setFilterParameters={setFilterParameters}
         species={speciesOptions}

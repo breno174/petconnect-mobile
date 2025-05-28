@@ -1,99 +1,116 @@
 import { PetImage } from "@/src/components/PetImage";
+import { usePetContext } from "@/src/context/petContext";
 import { Pet } from "@/src/interfaces/petInterface";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  Image,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
+  Image,
 } from "react-native";
 
 const PetProfile = () => {
-  const { petId } = useLocalSearchParams();
-  const [pet, setPet] = useState<Pet | null>(null);
-  const [loading, setLoading] = useState(true);
+  // const { petId } = useLocalSearchParams();
+  // const [pet, setPet] = useState<Pet | null>(null);
+  // const [loading, setLoading] = useState(true);
+  const { selectedPet } = usePetContext();
 
-  useEffect(() => {
-    const fetchPetData = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/pet/${petId}`);
-        const data = await response.json();
-        console.log({ data: data });
+  const defaultIMG = require('../../../../assets/images/download.jpeg')
 
-        setPet(data);
-      } catch (error) {
-        console.error("Erro ao buscar dados do pet:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchPetData = async () => {
+  //     try {
+  //       const response = await fetch(`http://localhost:8080/pet/${petId}`);
+  //       const data = await response.json();
+  //       console.log({ data: data });
+  //       console
 
-    if (petId) {
-      fetchPetData();
-    }
-  }, [petId]);
+  //       setPet(data);
+  //     } catch (error) {
+  //       console.error("Erro ao buscar dados do pet:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   if (petId) {
+  //     fetchPetData();
+  //   }
+  // }, [petId]);
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        {pet?.image ? (
-          <PetImage petImageName={pet.image} />
+    <View>
+      {selectedPet ? (
+        <ScrollView style={styles.container}>
+          <View style={styles.header}>
+            {(selectedPet.image && selectedPet.image.includes("supabase.co")) ?
+              (
+                <Image source={{ uri: selectedPet.image }} style={styles.petImage}/>
+              ): (
+                  <Image source = { defaultIMG } style = {styles.petImage}/>
+            )
+              }
+            {/* {pet?.image ? (
+          <PetImage petImageName={pet.image} petEdit={false} />
         ) : (
-          <Image
-            source={require("@/assets/images/download.jpeg")}
-            style={styles.petImage}
-          />
-        )}
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            width: "100%",
-            justifyContent: "space-between",
-            paddingRight: "15%",
-            paddingLeft: "15%",
-          }}
-        >
-          <View>
-            <Text style={styles.petName}>{pet?.name}</Text>
-            <Text style={styles.petBreed}>{pet?.race}</Text>
-          </View>
-          <View>
-            <TouchableOpacity style={styles.verifyButton}>
-              <Text style={styles.verifyText}>Verificar Vacinas</Text>
-            </TouchableOpacity>
-            <View style={styles.petDetails}>
-              <Text style={styles.detailItem}>{pet?.gender}</Text>
-              <Text style={styles.detailItem}>{pet?.birthDate}</Text>
+          <View style={styles.loadingContainer}>
+                          <ActivityIndicator size="large" color="#0000ff" />
+                        </View>
+        )} */}
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                width: "100%",
+                justifyContent: "space-between",
+                paddingRight: "15%",
+                paddingLeft: "15%",
+              }}
+            >
+              <View>
+                <Text style={styles.petName}>{selectedPet?.name}</Text>
+                <Text style={styles.petBreed}>{selectedPet?.race}</Text>
+              </View>
+              <View>
+                <TouchableOpacity style={styles.verifyButton}>
+                  <Text style={styles.verifyText}>Verificar Vacinas</Text>
+                </TouchableOpacity>
+                <View style={styles.petDetails}>
+                  <Text style={styles.detailItem}>{selectedPet?.gender}</Text>
+                  <Text style={styles.detailItem}>{selectedPet?.birthDate}</Text>
+                </View>
+              </View>
             </View>
           </View>
-        </View>
-      </View>
 
-      <Text style={styles.description}>
-        Lorem Ipsum is simply dummy text of the printing and typesetting
-        industry. It has survived not only five centuries, but also the leap
-        into electronic typesetting.
-      </Text>
+          <Text style={styles.description}>
+            Lorem Ipsum is simply dummy text of the printing and typesetting
+            industry. It has survived not only five centuries, but also the leap
+            into electronic typesetting.
+          </Text>
 
-      <TouchableOpacity style={styles.matchButton}>
-        <Text style={styles.matchText}>Match</Text>
-      </TouchableOpacity>
+          <TouchableOpacity style={styles.matchButton}>
+            <Text style={styles.matchText}>Match</Text>
+          </TouchableOpacity>
 
-      <View style={styles.ownerContainer}>
-        <Image
-          source={require("@/assets/images/download.jpeg")}
-          style={styles.ownerImage}
-        />
-        <View>
-          <Text style={styles.ownerName}>{pet?.user.name}</Text>
-          <Text style={styles.ownerMember}>{pet?.user.username}</Text>
-        </View>
-      </View>
-    </ScrollView>
+          <View style={styles.ownerContainer}>
+            <Image
+              source={require("@/assets/images/download.jpeg")}
+              style={styles.ownerImage}
+            />
+            <View>
+              <Text style={styles.ownerName}>{selectedPet?.user.name}</Text>
+              <Text style={styles.ownerMember}>{selectedPet?.user.username}</Text>
+            </View>
+          </View>
+        </ScrollView>
+      ) : (
+        <Text> Erro ao acessar a página do Pet.</Text>
+      )}
+    </View>
   );
 };
 
@@ -181,6 +198,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "gray",
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 });
 
 export default PetProfile;

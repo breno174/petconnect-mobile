@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Button, ScrollView } from 'react-native';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { AgeFilter, GenderFilter, BreedFilter, SpeciesFilter } from './FilterOptions';
@@ -14,14 +14,14 @@ interface FilterDrawerProps {
   maxAge: number;
 }
 
-export const FilterBottomSheet: React.FC<FilterDrawerProps> = ({
+export const FilterBottomSheet = forwardRef(({
   filterParameters,
   setFilterParameters,
   species,
   breeds,
   minAge,
   maxAge,
-}) => {
+}: FilterDrawerProps, ref) => {
   const sheetRef = useRef<BottomSheet>(null);
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -31,6 +31,15 @@ export const FilterBottomSheet: React.FC<FilterDrawerProps> = ({
   // const handleSheetChange = useCallback(() => {
   //   setIsSheetOpen(true);
   // }, []);
+  useImperativeHandle(ref, () => ({
+    close: () => {
+      console.log('Calling close from parent');
+      sheetRef.current?.close();
+    },
+    open: () => {
+      sheetRef.current?.snapToIndex(2);
+    }
+  }));
   const handleSnapPress = useCallback((index: number) => {
     sheetRef.current?.snapToIndex(index);
   }, []);
@@ -52,7 +61,7 @@ export const FilterBottomSheet: React.FC<FilterDrawerProps> = ({
         <View style={styles.sheetContent}>
           <View style={styles.topContainer}>
             <Text style={styles.header}>Filtros</Text>
-            <ThemedButton title='Aplicar' type='blue-small' onPress={handleClosePress}/>
+            <ThemedButton title='Concluir' type='blue-small' onPress={handleClosePress}/>
           </View>
           <ScrollView scrollEnabled={scrollEnabled} style={styles.scrollView}>
             <View style={styles.filterSection}>
@@ -96,7 +105,7 @@ export const FilterBottomSheet: React.FC<FilterDrawerProps> = ({
       </BottomSheet>
     </>
   );
-};
+});
 
 const styles = StyleSheet.create({
   sheetContent: {

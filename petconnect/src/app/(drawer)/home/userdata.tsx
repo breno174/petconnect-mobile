@@ -1,13 +1,17 @@
 import { useAuthUserContext } from "@/src/context/authUserProvider";
 import { UserData } from "@/src/interfaces/userInterface";
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, ScrollView, StyleSheet, Button } from "react-native";
-import { router } from "expo-router";
+import { View, Text, Image, ScrollView, StyleSheet, Button, TouchableOpacity, ActivityIndicator } from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
 import { removeToken } from "@/src/services/tokenService";
 import { deletePet } from "@/src/api/delete-pet";
 import { Pet } from "@/src/interfaces/petInterface";
 import { getPetsUser } from "@/src/api/get-pets-user";
 import { editPet } from "@/src/api/edit-pet";
+import { PetImage } from "@/src/components/PetImage";
+import { FontAwesome } from "@expo/vector-icons";
+import { isLoading } from "expo-font";
+import { usePetContext } from "@/src/context/petContext";
 
 // const pets = [
 //   {
@@ -26,36 +30,39 @@ import { editPet } from "@/src/api/edit-pet";
 //   },
 // ];
 
-const PetCard = ({
-  name,
-  sex,
-  breed,
-  image,
-  onDelete,
-  onEdit,
-}: {
-  name: string;
-  sex: string;
-  breed: string;
-  image: any;
-  onDelete?: () => void;
-  onEdit?: () => void;
-}) => {
+const AnimalCardProfile = ({ pet, onDelete, onEdit, }: { pet: Pet, onDelete?: () => void, onEdit?: () => void }) => {
+
+  const genderFontColor = pet.gender === "FEMALE" ? "deeppink" : "blue";
+
   return (
-    <View style={styles.petCard}>
-      <Image source={image} style={styles.petImage} />
-      <Text style={styles.petName}>
-        Nome: <Text style={styles.bold}>{name}</Text>
+    <View
+      style={styles.card}
+    >
+      <PetImage petImageName={pet.image} petEdit={false} />
+      <Text style={[styles.name, { color: genderFontColor }]}>{pet.name}</Text>
+      <Text style={styles.breed}>
+        {" "}
+        Raça:
+        <Text style={[styles.breed, { color: genderFontColor }]}>
+          {" "}
+          {pet.race}
+        </Text>
       </Text>
-      <Text>
-        Sexo: <Text style={styles.bold}>{sex}</Text>
+      <Text style={styles.gender}>
+        {" "}
+        Sexo:
+        <Text style={[styles.gender, { color: genderFontColor }]}>
+          {" "}
+          {pet.gender}
+        </Text>
       </Text>
-      <Text>
-        Raça: <Text style={styles.bold}>{breed}</Text>
-      </Text>
-      <View style={{ marginTop: 8 }}>
-        <Button title="Delete" onPress={onDelete} color="#d9534f" />
-        <Button title="Edit" onPress={onEdit} color="#0496ff" />
+      <View style={styles.buttonRow}>
+        <TouchableOpacity style={styles.iconButton} onPress={onDelete}>
+          <FontAwesome name="trash" size={24} color="#d9534f" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.iconButton} onPress={onEdit}>
+          <FontAwesome name="pencil" size={24} color="#0496ff" />
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -65,15 +72,20 @@ const UserProfile = () => {
   const { currentUser } = useAuthUserContext();
   const [user, setUser] = useState<UserData | null>(null);
   const [pets, setPet] = useState<Pet[]>([]);
+  const [isLoading, setIsLoading] = useState<Boolean>(false)
+  const { refreshKey } = useLocalSearchParams();
+  const {setSelectedPet} = usePetContext();
 
   const fetchData = async () => {
     try {
+      setIsLoading(true)
       const responseUser = await currentUser();
       console.log("responseUser", responseUser);
       setUser(responseUser);
       const petsData = await getPetsUser(responseUser.id);
       setPet(petsData)
       console.log("petsData", petsData)
+      setIsLoading(false)
     } catch (error) {
       console.log({ error: error });
       await removeToken();
@@ -83,16 +95,18 @@ const UserProfile = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [refreshKey]);
 
   function onDeletePetClick(id: string) {
+    setIsLoading(true)
     deletePet(id)
       .then(fetchData)
       .catch(error => console.log(error))
   }
 
-  function onEditPetClick(id: string){
-    router.push(`/(drawer)/home/profileActions/${id}`);
+  function onEditPetClick(pet: Pet) {
+    setSelectedPet(pet)
+    router.push(`/(drawer)/home/profileActions/${pet.id.toString()}`);
   }
   return (
     <ScrollView style={styles.container}>
@@ -146,11 +160,23 @@ const UserProfile = () => {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>PETS 🐾</Text>
+        {isLoading? 
+        (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#0000ff" />
+                <Text>Procurando pets...</Text>
+              </View>
+            )
+            :
+            (
+
         <View style={styles.petsContainer}>
           {pets.map((pet, index) => (
-            <PetCard key={index} name={pet.name} sex={pet.gender} breed={pet.race} image={pet.image} onEdit={() => onEditPetClick(pet.id.toString())} onDelete={() => onDeletePetClick(pet.id.toString())} />
+            <AnimalCardProfile key={index} pet={pet} onEdit={() => onEditPetClick(pet)} onDelete={() => onDeletePetClick(pet.id.toString())} />
           ))}
         </View>
+            )
+        }
       </View>
     </ScrollView>
   );
@@ -227,6 +253,64 @@ const styles = StyleSheet.create({
   bold: {
     fontWeight: "bold",
   },
+  listContainer: {
+    padding: 10,
+  },
+  row: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+  },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    marginBottom: 15,
+    padding: 1,
+    paddingBottom: 10,
+    width: "48%",
+    marginHorizontal: "1%",
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+    elevation: 5,
+  },
+  image: {
+    width: "100%",
+    height: 130,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  name: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 5,
+    textAlign: "center",
+  },
+  breed: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  gender: {
+    fontSize: 16,
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 8,
+    gap: "15%",
+  },
+  iconButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    backgroundColor: "#f0f0f0",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 });
 
 export default UserProfile;
