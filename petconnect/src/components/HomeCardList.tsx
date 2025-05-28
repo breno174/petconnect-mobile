@@ -9,9 +9,11 @@ import {
 import { Pet } from "../interfaces/petInterface";
 import { PetImage } from "./PetImage";
 import { useRouter } from "expo-router";
+import { usePetContext } from "../context/petContext";
 
 const AnimalCard = ({ pet }: { pet: Pet }) => {
   const router = useRouter();
+  const { setSelectedPet } = usePetContext();
 
   const genderFontColor = pet.gender === "FEMALE" ? "deeppink" : "blue";
 
@@ -19,10 +21,11 @@ const AnimalCard = ({ pet }: { pet: Pet }) => {
     <TouchableOpacity
       style={styles.card}
       onPress={() => {
+        setSelectedPet(pet)
         router.push(`/(drawer)/home/${pet.id}`);
       }}
     >
-      <PetImage petImageName={pet.image} />
+      <PetImage petImageName={pet.image} petEdit = {false} />
       <Text style={[styles.name, { color: genderFontColor }]}>{pet.name}</Text>
       <Text style={styles.breed}>
         {" "}

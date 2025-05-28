@@ -1,6 +1,7 @@
 import { Slot, useRouter } from "expo-router";
 import { AuthUserProvider } from "../context/authUserProvider";
 import { useEffect } from "react";
+import { PetProvider } from "../context/petContext";
 
 export default function Root() {
   const router = useRouter();
@@ -11,7 +12,9 @@ export default function Root() {
 
   return (
     <AuthUserProvider>
-      <Slot />
+      <PetProvider>
+        <Slot />
+      </PetProvider>
     </AuthUserProvider>
   );
 }

@@ -33,13 +33,16 @@ export const AuthUserProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [authToken, setAuthToken] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchToken = async () => {
-      const token = await getToken();
-      setAuthToken(token);
-    };
-
-    fetchToken();
-  }, []);
+  let mounted = true;
+  const fetchToken = async () => {
+    const token = await getToken();
+    if (mounted) setAuthToken(token);
+  };
+  fetchToken();
+  return () => {
+    mounted = false;
+  };
+}, []);
 
   const login = async (data: LoginProps) => {
     const response = await api.post<{ token: string }>("/auth/login", data);

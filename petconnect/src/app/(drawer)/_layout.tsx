@@ -15,7 +15,8 @@ import { useColorScheme } from "@/src/hooks/useColorScheme";
 // import AddPet from '../../assets/svgs/addPet.svg'
 import { Ionicons } from "@expo/vector-icons";
 import { AuthUserContext } from "@/src/context/authUserProvider";
-import { Redirect } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
+import { TouchableOpacity } from "react-native";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -26,7 +27,8 @@ export default function DrawerLayout() {
     Nunito: require("../../../assets/fonts/Nunito-Regular.ttf"),
   });
   const authUserContext = useContext(AuthUserContext);
-  
+  const router = useRouter();
+
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
@@ -48,7 +50,26 @@ export default function DrawerLayout() {
   return isAuthenticated ? (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <GestureHandlerRootView className="flex-1">
-        <Drawer drawerContent={CustomDrawerContent}>
+        <Drawer
+          drawerContent={CustomDrawerContent}
+          screenOptions={({ navigation }) => ({
+            headerRight: () => (
+              <Ionicons
+                name="menu"
+                size={28}
+                color="black"
+                style={{ marginRight: 15 }}
+                onPress={() => navigation.openDrawer()}
+              />
+            ),
+            headerLeft: () => null,
+            headerTitleStyle: {
+              fontSize: 20,
+              fontWeight: "bold",
+            },
+          })}
+        >
+
           <Drawer.Screen
             name="homeScreen"
             // This is the name of the page and must match the url from root
@@ -116,16 +137,26 @@ export default function DrawerLayout() {
           />
           <Drawer.Screen
             name="home/[petId]"
-            // This is the name of the page and must match the url from root
-            options={{
-              drawerItemStyle: { display: "none" }
-            }}
+            options={({ navigation }) => ({
+              drawerItemStyle: { display: "none" },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => router.back()}>
+                  <Ionicons style={{ marginLeft: 15 }} name="arrow-back" size={28} color="black" />
+                </TouchableOpacity>
+              ),
+              title: 'Pet'
+            })}
           />
           <Drawer.Screen
             name="home/profileActions/[petId]"
             // This is the name of the page and must match the url from root
             options={{
               drawerItemStyle: { display: "none" },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => router.back()}>
+                  <Ionicons style={{ marginLeft: 15 }} name="arrow-back" size={28} color="black" />
+                </TouchableOpacity>
+              ),
               title: "Editar Pet"
             }}
           />
@@ -168,7 +199,7 @@ export default function DrawerLayout() {
               drawerItemStyle: { display: "none" }
             }}
           />
-          
+
           <Drawer.Screen
             name="home/userdata"
             // This is the name of the page and must match the url from root
@@ -178,7 +209,7 @@ export default function DrawerLayout() {
               drawerIcon: () => (
                 <Ionicons name="person" size={30} color={"white"} />
               ),
-              title: "UserData",
+              title: "Perfil",
             }}
           />
         </Drawer>
