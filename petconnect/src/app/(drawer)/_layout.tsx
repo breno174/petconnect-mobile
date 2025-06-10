@@ -17,6 +17,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { AuthUserContext } from "@/src/context/authUserProvider";
 import { Redirect, useRouter } from "expo-router";
 import { TouchableOpacity } from "react-native";
+import { useSearchParams } from "expo-router/build/hooks";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -38,7 +39,6 @@ export default function DrawerLayout() {
   if (!loaded) {
     return null;
   }
-
 
   if (!authUserContext) {
     //!!!!! HANDLE AUTHCONTEXT NOT AVAILABLE !!!!!
@@ -165,6 +165,7 @@ export default function DrawerLayout() {
             // This is the name of the page and must match the url from root
             options={{
               drawerItemStyle: { display: "none" },
+              // title: `Chat com ${router.params?.userId ?? "Usuário"}`,
             }}
           />
           <Drawer.Screen

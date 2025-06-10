@@ -11,13 +11,19 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
+import { useNavigation, useRouter } from "expo-router";
 
 const PetProfile = () => {
+  const router = useRouter();
   // const { petId } = useLocalSearchParams();
   // const [pet, setPet] = useState<Pet | null>(null);
   // const [loading, setLoading] = useState(true);
   const { selectedPet } = usePetContext();
-
+  const redirectToUser = async () => {
+    if (selectedPet?.user.id) {
+      router.replace(`/home/chatscreenconversation/${selectedPet.user.id}`);
+    }
+  }
   const defaultIMG = require('../../../../assets/images/download.jpeg')
 
   // useEffect(() => {
@@ -92,7 +98,7 @@ const PetProfile = () => {
             into electronic typesetting.
           </Text>
 
-          <TouchableOpacity style={styles.matchButton}>
+          <TouchableOpacity onPress={() => redirectToUser()} style={styles.matchButton}>
             <Text style={styles.matchText}>Match</Text>
           </TouchableOpacity>
 

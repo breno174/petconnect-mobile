@@ -135,7 +135,7 @@ export default function Register() {
                 birthDate: new Date(),
                 specie: '',
                 race: ''
-            })
+            });
 
             setImage(null)
 
