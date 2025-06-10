@@ -217,9 +217,9 @@ export const GenderFilter: React.FC<GenderFilterProps> = ({ filterParameters, se
   const handleValueChange = (selectedIndex: number) => {
     let newValue: 'ALL' | 'MALE' | 'FEMALE' = 'ALL'; // Default to ALL
 
-    if (selectedIndex === 1) {
+    if (selectedIndex === 2) {
       newValue = 'FEMALE';
-    } else if (selectedIndex === 2) {
+    } else if (selectedIndex === 1) {
       newValue = 'MALE';
     }
 
@@ -228,9 +228,9 @@ export const GenderFilter: React.FC<GenderFilterProps> = ({ filterParameters, se
 
   const selectedIndex = () => {
     if (filterParameters.gender === 'FEMALE') {
-      return 1;
-    } else if (filterParameters.gender === 'MALE') {
       return 2;
+    } else if (filterParameters.gender === 'MALE') {
+      return 1;
     } else {
       return 0;
     }

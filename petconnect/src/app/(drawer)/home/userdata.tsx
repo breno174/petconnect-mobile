@@ -75,6 +75,15 @@ const UserProfile = () => {
   const [isLoading, setIsLoading] = useState<Boolean>(false)
   const { refreshKey } = useLocalSearchParams();
   const {setSelectedPet} = usePetContext();
+  const [carregando, setCarregando] = useState(false);
+
+  const handleRefresh = () => {
+    setCarregando(true);
+    setTimeout(() => {
+      fetchData();
+      setCarregando(false);
+    }, 2000);
+  }
 
   const fetchData = async () => {
     try {
@@ -157,6 +166,17 @@ const UserProfile = () => {
           </Text>
         </View>
       </View>
+      <TouchableOpacity
+        style={styles.botaoFlutuante}
+        onPress={handleRefresh}
+        disabled={carregando}
+      >
+        {carregando ? (
+          <ActivityIndicator size="small" color="#ffffff" />
+        ) : (
+          <Text style={styles.iconeBotao}>↻</Text>
+        )}
+      </TouchableOpacity>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>PETS 🐾</Text>
@@ -211,6 +231,27 @@ const styles = StyleSheet.create({
   userRole: {
     fontSize: 14,
     color: "gray",
+  },
+  botaoFlutuante: {
+    position: 'absolute',
+    width: 50,
+    height: 50,
+    borderRadius: 30,
+    backgroundColor: '#007AFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    right: 17,
+    bottom: 17,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    zIndex: 1000,
+  },
+  iconeBotao: {
+    fontSize: 24,
+    color: '#ffffff',
   },
   section: {
     marginBottom: 20,
